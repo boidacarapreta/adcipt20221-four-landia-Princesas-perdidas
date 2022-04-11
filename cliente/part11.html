@@ -22,7 +22,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
     scene: {
@@ -49,7 +49,7 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/cinderela.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('dude', 'assets/belaadormecida.png', { frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()
@@ -73,7 +73,7 @@ function create ()
     player = this.physics.add.sprite(100, 450, 'dude');
 
     //  Player physics properties. Give the little guy a slight bounce.
-    player.setBounce(0.2);
+    //player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
     //  Our player animations, turning, walking left and walking right.
@@ -194,10 +194,10 @@ function update ()
   //      player.anims.play('turn');
   //  }
 
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-       player.setVelocityY(-330);
-  }
+//    if (cursors.up.isDown && player.body.touching.down)
+//    {
+//       player.setVelocityY(-330);
+//  }
 }
 
 function collectStar (player, star)
