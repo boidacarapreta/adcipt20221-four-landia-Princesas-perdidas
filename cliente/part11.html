@@ -33,6 +33,7 @@ var config = {
 };
 
 var player;
+var player2;
 var stars;
 var bombs;
 var platforms;
@@ -77,6 +78,7 @@ function create ()
     //  Player physics properties. Give the little guy a slight bounce.
     //player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+    //player2.setCollideWorldBounds(true);
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
@@ -114,34 +116,36 @@ function create ()
 
     player2 = this.physics.add.sprite(150, 400, 'branca'); //arrumar esse player
 
+    player2.setCollideWorldBounds(true);
+    
     this.anims.create({
-        key: 'down',
+        key: 's',
         frames: this.anims.generateFrameNumbers('branca', { start: 0, end: 3 }),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
-        key: 'left',
+        key: 'a',
         frames: this.anims.generateFrameNumbers('branca', { start: 4, end: 7 }),
         frameRate: 10,
         repeat: -1
     });
    
     this.anims.create({
-        key: 'turn',
+        key: 'turn2',
         frames: [ { key: 'branca', frame: 0 } ],
         frameRate: 20
     });
 
     this.anims.create({
-        key: 'right',
+        key: 'd',
         frames: this.anims.generateFrameNumbers('branca', { start: 8, end: 11 }),
         frameRate: 10,
         repeat: -1
     });
     this.anims.create({
-        key: 'up',
+        key: 'w',
         frames: this.anims.generateFrameNumbers('branca', { start: 12, end: 15 }),
         frameRate: 10,
         repeat: -1
@@ -171,8 +175,10 @@ function create ()
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
+    this.physics.add.collider(player2, platforms);
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(player, player2);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, collectStar, null, this);
@@ -180,6 +186,12 @@ function create ()
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     key1 = this.input.keyboard.add
+
+    w = this.input.keyboard.addKey("W");
+    s = this.input.keyboard.addKey("S");
+    a = this.input.keyboard.addKey("A");
+    d = this.input.keyboard.addKey("D");
+    //teclaf = this.input.keyboard.addKey("F");
 }
 
 function update ()
@@ -189,20 +201,13 @@ function update ()
         return;
     }
 
-    if (cursors.left.isDown)
+    else if (cursors.left.isDown)
     {
         player.setVelocityX(-100);
 
         player.anims.play('left', true);
     }
-/*
-    if (key1.isDown)
-    {
-        player.setVelocityX(-100);
 
-        player.anims.play('left', true);
-    }
-*/
     else if (cursors.right.isDown)
     {
         player.setVelocityX(100);
@@ -224,6 +229,34 @@ function update ()
         player.anims.play('down', true);
     }
 
+    else if (a.isDown)
+    {
+        player2.setVelocityX(-100);
+
+        player2.anims.play('a', true);
+    }
+
+    else if (d.isDown)
+    {
+        player2.setVelocityX(100);
+
+        player2.anims.play('d', true);
+    }
+
+    else if (w.isDown)
+    {
+        player2.setVelocityY(-100);
+
+        player2.anims.play('w', true);
+    }
+
+    else if (s.isDown)
+    {
+        player2.setVelocityY(100);
+
+        player2.anims.play('s', true);
+    }
+
     else
     {
         player.setVelocityX(0);
@@ -231,8 +264,14 @@ function update ()
         player.setVelocityY(0);
 
         player.anims.play('turn');
-    }
     
+        player2.setVelocityX(0);
+
+        player2.setVelocityY(0);
+
+        player2.anims.play('turn2');
+    }
+
   //  else
   //  {
    //     player.setVelocityY(0);
