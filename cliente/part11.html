@@ -2,8 +2,8 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <title>Making your first Phaser 3 Game - Part 11</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -42,6 +42,7 @@ var gameOver = false;
 var scoreText;
 
 var game = new Phaser.Game(config);
+var key1;
 
 function preload ()
 {
@@ -177,6 +178,8 @@ function create ()
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+    key1 = this.input.keyboard.add
 }
 
 function update ()
@@ -192,7 +195,14 @@ function update ()
 
         player.anims.play('left', true);
     }
+/*
+    if (key1.isDown)
+    {
+        player.setVelocityX(-100);
 
+        player.anims.play('left', true);
+    }
+*/
     else if (cursors.right.isDown)
     {
         player.setVelocityX(100);
