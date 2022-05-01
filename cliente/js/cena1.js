@@ -281,3 +281,4 @@ function hitBomb(player, bomb) {
 
   gameOver = true;
 }
+export { cena1 };
