@@ -1,5 +1,5 @@
 // Importar a próxima cena
-import { cena4 } from "./cena4.js";
+import { cena3 } from "./cena3.js";
 
 // Criar a cena 0
 var cena0 = new Phaser.Scene("Cena 0");
@@ -17,7 +17,7 @@ cena0.create = function () {
   button.on(
     "pointerdown",
     function () {
-      this.scene.start(cena4);
+      this.scene.start(cena3);
     },
     this
   );
