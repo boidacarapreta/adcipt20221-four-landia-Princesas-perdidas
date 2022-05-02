@@ -1,3 +1,5 @@
+//Notas pro professor: não sei se consegui colocar o som de colidir com a parede.
+
 // Importar a próxima cena
 import { cena2 } from "./cena2.js";
 
@@ -11,8 +13,9 @@ var player1;
 var player2;
 var cursors;
 var trilha;
-var W;
 var cameras;
+var parede;
+var labirinto;
 
 cena3.preload = function () {
   this.load.image("tileset0", "assets/terreno.png");
@@ -22,8 +25,8 @@ cena3.preload = function () {
     frameWidth: 32,
     frameHeight: 48,
   });
-  this.load.audio("musiquinha", "assets/musiquinha.mp3");
-  this.load.audio("efeito", "assets/efeito.mp3");
+  //this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.audio("efeito", "assets/coli-arvore.mp3");
   
   // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
@@ -34,11 +37,11 @@ cena3.preload = function () {
 
 cena3.create = function () {
   // Trilha sonora
-  trilha = this.sound.add("musiquinha");
-  trilha.play();
-  trilha.setLoop(true);
+  //trilha = this.sound.add("musiquinha");
+  //trilha.play();
+  //trilha.setLoop(true);
 
-  parede = this.sound.add("parede");
+  parede = this.sound.add("efeito");
 
   const map = this.make.tilemap({ key: "map" });
 
@@ -84,6 +87,10 @@ cena3.create = function () {
     frameRate: 10,
     repeat: -1,
   });
+  
+  // Camada 1: terreno
+  //labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
+  //labirinto.setCollisionByProperty({ collides: true });
 
   // Cena (960x960) maior que a tela (800x600)
   this.cameras.main.setBounds(0, 0, 1280, 800);
@@ -93,16 +100,16 @@ cena3.create = function () {
   this.cameras.main.startFollow(player1);
   this.cameras.main.setZoom(2);
 
+  var physics = this.physics;
 
   cursors = this.input.keyboard.createCursorKeys();
   this.physics.add.collider(player1, worldLayer);
+  
   //worldLayer.setCollisionBetween();
   worldLayer.setCollisionByProperty({ collides: true });
-}
 
-function hit(player, ARCas) {
-  // Ao colidir com a parede, toca o efeito sonoro
-  parede.play();
+  // Detecção de colisão e disparo de evento: ARCas
+  physics.add.collider(player1, worldLayer, hitTiles, null, this);
 }
 
 cena3.update = function () {
@@ -123,6 +130,11 @@ if (cursors.left.isDown) {
   player1.setVelocityY(0);
   player1.anims.play("turn");
   }
+}
+
+function hitTiles(player1, worldLayer) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
 }
 
 export { cena3 };
