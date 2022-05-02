@@ -14,7 +14,7 @@ var score = 0;
 var gameOver = false;
 var scoreText;
 
-var game = new Phaser.Game(config);
+//var game = new Phaser.Game(config);
 var A;
 var W;
 var S;
