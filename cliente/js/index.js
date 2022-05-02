@@ -18,12 +18,12 @@ const config = {
   },
   scale: {
     mode: Phaser.Scale.FIT,
-    parent: "game",
+    parent: "game-container",
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 960,
     height: 540,
   },
-  scene: [cena0, cena1, cena2, cena3 ],
+  scene: [cena0, cena1, cena2, cena3],
 };
 
 // Criar o objeto principal

@@ -21,12 +21,8 @@ var S;
 var D;
 
 cena1.preload = function () {
-  //this.load.image("fundo", "assets/fundo.jpg");
-  //this.load.image("labirinto", "assets/labirinto.png");
-
   // Tilesets
   this.load.image("terreno", "assets/terreno.png");
-
   // Tilemap
   this.load.tilemapTiledJSON("mapa", "assets/teste3.json");
 

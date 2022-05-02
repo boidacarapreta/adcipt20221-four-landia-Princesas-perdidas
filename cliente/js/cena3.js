@@ -8,23 +8,37 @@ var tileset0;
 var map;
 var chao;
 var player1;
+var player2;
 var cursors;
 var trilha;
+var W;
+var cameras;
 
 cena3.preload = function () {
-this.load.image("tileset0", "assets/terreno.png");
-this.load.tilemapTiledJSON("map", "assets/teste6.json");
-this.load.spritesheet("bruxa", "assets/brancadeneve.png", {
-  frameWidth: 32,
-  frameHeight: 48,
-});
-this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.image("tileset0", "assets/terreno.png");
+  this.load.tilemapTiledJSON("map", "assets/teste4.json");
+  // Jogador 1
+  this.load.spritesheet("bruxa", "assets/bruxa.png", {
+    frameWidth: 32,
+    frameHeight: 48,
+  });
+  this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.audio("efeito", "assets/efeito.mp3");
+  
+  // Jogador 2
+  this.load.spritesheet("branca", "assets/brancadeneve.png", {
+    frameWidth: 32,
+    frameHeight: 48,
+  });
 }
 
 cena3.create = function () {
   // Trilha sonora
   trilha = this.sound.add("musiquinha");
   trilha.play();
+  trilha.setLoop(true);
+
+  parede = this.sound.add("parede");
 
   const map = this.make.tilemap({ key: "map" });
 
@@ -71,10 +85,24 @@ cena3.create = function () {
     repeat: -1,
   });
 
+  // Cena (960x960) maior que a tela (800x600)
+  this.cameras.main.setBounds(0, 0, 1280, 800);
+  this.physics.world.setBounds(0, 0, 1280, 800);
+
+  // Câmera seguindo o personagem 1
+  this.cameras.main.startFollow(player1);
+  this.cameras.main.setZoom(2);
+
+
   cursors = this.input.keyboard.createCursorKeys();
   this.physics.add.collider(player1, worldLayer);
   //worldLayer.setCollisionBetween();
   worldLayer.setCollisionByProperty({ collides: true });
+}
+
+function hit(player, ARCas) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
 }
 
 cena3.update = function () {
@@ -94,7 +122,7 @@ if (cursors.left.isDown) {
   player1.setVelocityX(0);
   player1.setVelocityY(0);
   player1.anims.play("turn");
+  }
 }
- }
 
 export { cena3 };
