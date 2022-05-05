@@ -25,8 +25,8 @@ cena3.preload = function () {
     frameWidth: 32,
     frameHeight: 48,
   });
-  //this.load.audio("musiquinha", "assets/musiquinha.mp3");
-  this.load.audio("efeito", "assets/coli-arvore.mp3");
+  this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.audio("efeito", "assets/efeito.mp3");
   
   // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
@@ -37,21 +37,20 @@ cena3.preload = function () {
 
 cena3.create = function () {
   // Trilha sonora
-  //trilha = this.sound.add("musiquinha");
-  //trilha.play();
-  //trilha.setLoop(true);
+  trilha = this.sound.add("musiquinha");
+  trilha.play();
+  trilha.setLoop(true);
 
   parede = this.sound.add("efeito");
 
-  const map = this.make.tilemap({ key: "map" });
+  map = this.make.tilemap({ key: "map" });
 
   // Primeira "tileset0" é o nome que está no tiled
   // Segundo "tileset0" é a key do preload
-  const tileset = map.addTilesetImage("tileset0", "tileset0");
+  tileset0 = map.addTilesetImage("tileset0", "tileset0");
 
   // Parameters: layer name (or index) from Tiled, tileset, x, y
-  const belowLayer = map.createStaticLayer("chao", tileset, 0, 0);
-  const worldLayer = map.createStaticLayer("labirinto", tileset, 0, 0);
+  chao = map.createStaticLayer("chao", tileset0, 0, 0);
 
   // Jogador 1 - controles/animação
   player1 = this.physics.add.sprite(100, 90, "bruxa");
@@ -89,8 +88,8 @@ cena3.create = function () {
   });
   
   // Camada 1: terreno
-  //labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
-  //labirinto.setCollisionByProperty({ collides: true });
+  labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
+  labirinto.setCollisionByProperty({ collides: true });
 
   // Cena (960x960) maior que a tela (800x600)
   this.cameras.main.setBounds(0, 0, 1280, 800);
@@ -103,36 +102,37 @@ cena3.create = function () {
   var physics = this.physics;
 
   cursors = this.input.keyboard.createCursorKeys();
-  this.physics.add.collider(player1, worldLayer);
+  this.physics.add.collider(player1, tileset0);
   
   //worldLayer.setCollisionBetween();
-  worldLayer.setCollisionByProperty({ collides: true });
+  //worldLayer.setCollisionByProperty({ collides: true });
 
   // Detecção de colisão e disparo de evento: ARCas
-  physics.add.collider(player1, worldLayer, hitTiles, null, this);
+  physics.add.collider(player1, labirinto, hitTiles, null, this);
 }
 
 cena3.update = function () {
 if (cursors.left.isDown) {
   player1.setVelocityX(-100);
   player1.anims.play("left", true);
-} else if (cursors.right.isDown) {
+  } else if (cursors.right.isDown) {
   player1.setVelocityX(100);
   player1.anims.play("right", true);
-} else if (cursors.up.isDown) {
+  } else if (cursors.up.isDown) {
   player1.setVelocityY(-100);
   player1.anims.play("up", true);
-} else if (cursors.down.isDown) {
+  } else if (cursors.down.isDown) {
   player1.setVelocityY(100);
   player1.anims.play("down", true);
-} else {
+}
+else {
   player1.setVelocityX(0);
   player1.setVelocityY(0);
   player1.anims.play("turn");
   }
 }
 
-function hitTiles(player1, worldLayer) {
+function hitTiles(player1, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
   parede.play();
 }

@@ -138,10 +138,6 @@ cena1.create = function () {
     repeat: -1,
   });
 
-  // Camada 2: ARCas
-  ARCas = map.createStaticLayer("ARCas", tileset1, 0, 0);
-  ARCas.setCollisionByProperty({ collides: true });
-
   //  Input Events
   cursors = this.input.keyboard.createCursorKeys();
 
