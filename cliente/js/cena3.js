@@ -1,5 +1,3 @@
-//Notas pro professor: não sei se consegui colocar o som de colidir com a parede.
-
 // Importar a próxima cena
 import { cena2 } from "./cena2.js";
 
@@ -49,7 +47,6 @@ cena3.create = function () {
   // Segundo "tileset0" é a key do preload
   tileset0 = map.addTilesetImage("tileset0", "tileset0");
 
-  // Parameters: layer name (or index) from Tiled, tileset, x, y
   chao = map.createStaticLayer("chao", tileset0, 0, 0);
 
   // Jogador 1 - controles/animação
@@ -115,17 +112,16 @@ cena3.update = function () {
 if (cursors.left.isDown) {
   player1.setVelocityX(-100);
   player1.anims.play("left", true);
-  } else if (cursors.right.isDown) {
-  player1.setVelocityX(100);
-  player1.anims.play("right", true);
   } else if (cursors.up.isDown) {
   player1.setVelocityY(-100);
   player1.anims.play("up", true);
+  } else if (cursors.right.isDown) {
+  player1.setVelocityX(100);
+  player1.anims.play("right", true);
   } else if (cursors.down.isDown) {
   player1.setVelocityY(100);
   player1.anims.play("down", true);
-}
-else {
+  } else {
   player1.setVelocityX(0);
   player1.setVelocityY(0);
   player1.anims.play("turn");

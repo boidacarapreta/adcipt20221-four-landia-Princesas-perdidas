@@ -140,10 +140,7 @@ cena1.create = function () {
 
   //  Input Events
   cursors = this.input.keyboard.createCursorKeys();
-
-  //  Collide the player1 and the stars with the platforms
-  this.physics.add.collider(player1, platforms);
-  this.physics.add.collider(player2, platforms);
+  
   this.physics.add.overlap(player1, player2);
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function

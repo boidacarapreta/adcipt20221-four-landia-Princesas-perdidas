@@ -14,17 +14,7 @@ var score = 0;
 var gameOver = false;
 var scoreText;
 
-//var game = new Phaser.Game(config);
-var A;
-var W;
-var S;
-var D;
-
 function preload() {
-  this.load.image("sky", "assets/fundo1.png");
-  this.load.image("ground", "assets/platform.png");
-  this.load.image("star", "assets/star.png");
-  this.load.image("bomb", "assets/bomb.png");
   this.load.spritesheet("dude", "assets/elsa.png", {
     frameWidth: 32,
     frameHeight: 48,
