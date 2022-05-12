@@ -14,6 +14,10 @@ var trilha;
 var cameras;
 var parede;
 var labirinto;
+var A;
+var W;
+var S;
+var D;
 
 cena3.preload = function () {
   this.load.image("tileset0", "assets/terreno.png");
@@ -35,9 +39,9 @@ cena3.preload = function () {
 
 cena3.create = function () {
   // Trilha sonora
-  trilha = this.sound.add("musiquinha");
-  trilha.play();
-  trilha.setLoop(true);
+  //trilha = this.sound.add("musiquinha");
+  //trilha.play();
+  //trilha.setLoop(true);
 
   parede = this.sound.add("efeito");
 
@@ -83,7 +87,58 @@ cena3.create = function () {
     frameRate: 10,
     repeat: -1,
   });
-  
+
+  // Jogador 2 - controles/animação
+  player2 = this.physics.add.sprite(150, 90, "branca");
+  player2.setCollideWorldBounds(true);
+
+  this.anims.create({
+    key: "S",
+    frames: this.anims.generateFrameNumbers("branca", {
+      start: 0,
+      end: 3,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  this.anims.create({
+    key: "A",
+    frames: this.anims.generateFrameNumbers("branca", {
+      start: 4,
+      end: 7,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  this.anims.create({
+    key: "turn2",
+    frames: [{ key: "branca", frame: 0 }],
+    frameRate: 20,
+  });
+  this.anims.create({
+    key: "D",
+    frames: this.anims.generateFrameNumbers("branca", {
+      start: 8,
+      end: 11,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  this.anims.create({
+    key: "W",
+    frames: this.anims.generateFrameNumbers("branca", {
+      start: 12,
+      end: 15,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+
+  W = this.input.keyboard.addKey("W");
+  S = this.input.keyboard.addKey("S");
+  A = this.input.keyboard.addKey("A");
+  D = this.input.keyboard.addKey("D");
+
   // Camada 1: terreno
   labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
   labirinto.setCollisionByProperty({ collides: true });
@@ -99,13 +154,19 @@ cena3.create = function () {
   var physics = this.physics;
 
   cursors = this.input.keyboard.createCursorKeys();
+
   this.physics.add.collider(player1, tileset0);
-  
+  this.physics.add.collider(player2, tileset0);
+  this.physics.add.overlap(player1, player2);
+
   //worldLayer.setCollisionBetween();
   //worldLayer.setCollisionByProperty({ collides: true });
 
   // Detecção de colisão e disparo de evento: ARCas
   physics.add.collider(player1, labirinto, hitTiles, null, this);
+  physics.add.collider(player2, labirinto, hitTiles2, null, this);
+  physics.add.overlap(player1, player2, hitPlayer, null, this);
+
 }
 
 cena3.update = function () {
@@ -126,9 +187,37 @@ if (cursors.left.isDown) {
   player1.setVelocityY(0);
   player1.anims.play("turn");
   }
+
+if (A.isDown){
+    player2.setVelocityX(-100);
+    player2.anims.play("A", true);
+  } else if (D.isDown){
+    player2.setVelocityX(100);
+    player2.anims.play("D", true);
+  } else if (W.isDown){
+    player2.setVelocityY(-100);
+    player2.anims.play("W", true);
+  } else if (S.isDown){
+    player2.setVelocityY(100);
+    player2.anims.play("S", true);
+  } else {
+    player2.setVelocityX(0);
+    player2.setVelocityY(0);
+    player2.anims.play("turn2");
+  }
 }
 
 function hitTiles(player1, labirinto) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
+}
+
+function hitTiles2(player2, labirinto) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
+}
+
+function hitPlayer (player1, player2) {
   // Ao colidir com a parede, toca o efeito sonoro
   parede.play();
 }
