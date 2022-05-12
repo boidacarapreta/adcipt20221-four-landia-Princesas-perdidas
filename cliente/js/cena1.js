@@ -1,100 +1,105 @@
 // Importar a próxima cena
 import { cena2 } from "./cena2.js";
 
-// Criar a cena 1
+// Criar a cena 3
 var cena1 = new Phaser.Scene("Cena 1");
 
-var player;
+var tileset0;
+var map;
+var chao;
+var player1;
 var player2;
-var stars;
-var bombs;
-var platforms;
 var cursors;
-var score = 0;
-var gameOver = false;
-var scoreText;
+var trilha;
+var cameras;
+var parede;
+var labirinto;
+var A;
+var W;
+var S;
+var D;
 
-function preload() {
-  this.load.spritesheet("dude", "assets/elsa.png", {
+cena1.preload = function () {
+  this.load.image("tileset0", "assets/terreno.png");
+  this.load.tilemapTiledJSON("map", "assets/teste4.json");
+  // Jogador 1
+  this.load.spritesheet("bruxa", "assets/bruxa.png", {
     frameWidth: 32,
     frameHeight: 48,
   });
+  this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.audio("efeito", "assets/efeito.mp3");
+  
+  // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
     frameWidth: 32,
     frameHeight: 48,
   });
+
+  //Sprite tela cheia
+  this.load.spritesheet("telacheia", "assets/telacheia2.png", {
+    frameWidth: 50,
+    frameHeight: 52,
+  });
 }
 
-function create() {
-  //  A simple background for our game
-  this.add.image(400, 300, "sky");
+cena1.create = function () {
+  // Trilha sonora
+  //trilha = this.sound.add("musiquinha");
+  //trilha.play();
+  //trilha.setLoop(true);
 
-  //  The platforms group contains the ground and the 2 ledges we can jump on
-  platforms = this.physics.add.staticGroup();
+  parede = this.sound.add("efeito");
 
-  //  Here we create the ground.
-  //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-  platforms.create(400, 568, "ground").setScale(2).refreshBody();
+  map = this.make.tilemap({ key: "map" });
 
-  //  Now let's create some ledges
-  platforms.create(600, 400, "ground");
-  platforms.create(50, 250, "ground");
-  platforms.create(750, 220, "ground");
+  // Primeira "tileset0" é o nome que está no tiled
+  // Segundo "tileset0" é a key do preload
+  tileset0 = map.addTilesetImage("tileset0", "tileset0");
 
-  // The player and its settings
-  player = this.physics.add.sprite(100, 450, "dude");
+  chao = map.createStaticLayer("chao", tileset0, 0, 0);
 
-  //  Player physics properties. Give the little guy a slight bounce.
-  //player.setBounce(0.2);
-  player.setCollideWorldBounds(true);
-  //player2.setCollideWorldBounds(true);
+  // Jogador 1 - controles/animação
+  player1 = this.physics.add.sprite(100, 90, "bruxa");
+  player1.setCollideWorldBounds(true);
 
-  //  Our player animations, turning, walking left and walking right.
+  //  Animação do player1
   this.anims.create({
     key: "down",
-    frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+    frames: this.anims.generateFrameNumbers("bruxa", { start: 0, end: 3 }),
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "left",
-    frames: this.anims.generateFrameNumbers("dude", { start: 4, end: 7 }),
+    frames: this.anims.generateFrameNumbers("bruxa", { start: 4, end: 7 }),
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "turn",
-    frames: [{ key: "dude", frame: 0 }],
+    frames: [{ key: "bruxa", frame: 0 }],
     frameRate: 20,
   });
-
   this.anims.create({
     key: "right",
-    frames: this.anims.generateFrameNumbers("dude", {
-      start: 8,
-      end: 11,
-    }),
+    frames: this.anims.generateFrameNumbers("bruxa", { start: 8, end: 11 }),
     frameRate: 10,
     repeat: -1,
   });
   this.anims.create({
     key: "up",
-    frames: this.anims.generateFrameNumbers("dude", {
-      start: 12,
-      end: 15,
-    }),
+    frames: this.anims.generateFrameNumbers("bruxa", { start: 12, end: 15 }),
     frameRate: 10,
     repeat: -1,
   });
 
-  player2 = this.physics.add.sprite(150, 400, "branca"); //arrumar esse player
-
+  // Jogador 2 - controles/animação
+  player2 = this.physics.add.sprite(150, 90, "branca");
   player2.setCollideWorldBounds(true);
 
   this.anims.create({
-    key: "s",
+    key: "S",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 0,
       end: 3,
@@ -102,9 +107,8 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
-    key: "a",
+    key: "A",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 4,
       end: 7,
@@ -112,15 +116,13 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "turn2",
     frames: [{ key: "branca", frame: 0 }],
     frameRate: 20,
   });
-
   this.anims.create({
-    key: "d",
+    key: "D",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 8,
       end: 11,
@@ -129,7 +131,7 @@ function create() {
     repeat: -1,
   });
   this.anims.create({
-    key: "w",
+    key: "W",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 12,
       end: 15,
@@ -138,137 +140,114 @@ function create() {
     repeat: -1,
   });
 
-  //  Input Events
+  W = this.input.keyboard.addKey("W");
+  S = this.input.keyboard.addKey("S");
+  A = this.input.keyboard.addKey("A");
+  D = this.input.keyboard.addKey("D");
+
+  // Camada 1: terreno
+  labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
+  labirinto.setCollisionByProperty({ collides: true });
+
+  // Cena (960x960) maior que a tela (800x600)
+  this.cameras.main.setBounds(0, 0, 1280, 800);
+  this.physics.world.setBounds(0, 0, 1280, 800);
+
+  // Câmera seguindo o personagem 1
+  this.cameras.main.startFollow(player1);
+  this.cameras.main.setZoom(1);
+
+  //Tela cheia
+  var button2 = this.add
+    .image(100 - 16, 450, "telacheia", 0)
+    .setOrigin(1, 0)
+    .setInteractive()
+    .setScrollFactor(0);
+
+  // Ao clicar no botão de tela cheia
+  button2.on(
+    "pointerup",
+    function () {
+      if (this.scale.isFullscreen) {
+        button2.setFrame(0);
+        this.scale.stopFullscreen();
+      } else {
+        button2.setFrame(1);
+        this.scale.startFullscreen();
+      }
+    },
+    this
+  );
+
+  var physics = this.physics;
+
   cursors = this.input.keyboard.createCursorKeys();
 
-  //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-  stars = this.physics.add.group({
-    key: "star",
-    repeat: 11,
-    setXY: { x: 12, y: 0, stepX: 70 },
-  });
+  this.physics.add.collider(player1, tileset0);
+  this.physics.add.collider(player2, tileset0);
+  this.physics.add.overlap(player1, player2);
 
-  stars.children.iterate(function (child) {
-    //  Give each star a slightly different bounce
-    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-  });
+  //worldLayer.setCollisionBetween();
+  //worldLayer.setCollisionByProperty({ collides: true });
 
-  bombs = this.physics.add.group();
+  // Detecção de colisão e disparo de evento: ARCas
+  physics.add.collider(player1, labirinto, hitTiles, null, this);
+  physics.add.collider(player2, labirinto, hitTiles2, null, this);
+  physics.add.overlap(player1, player2, hitPlayer, null, this);
 
-  //  The score
-  scoreText = this.add.text(16, 16, "score: 0", {
-    fontSize: "32px",
-    fill: "#000",
-  });
-
-  //  Collide the player and the stars with the platforms
-  this.physics.add.collider(player, platforms);
-  this.physics.add.collider(player2, platforms);
-  this.physics.add.collider(stars, platforms);
-  this.physics.add.collider(bombs, platforms);
-  this.physics.add.collider(player, player2);
-
-  //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-  this.physics.add.overlap(player, stars, collectStar, null, this);
-
-  this.physics.add.collider(player, bombs, hitBomb, null, this);
-
-  key1 = this.input.keyboard.add;
-
-  w = this.input.keyboard.addKey("W");
-  s = this.input.keyboard.addKey("S");
-  a = this.input.keyboard.addKey("A");
-  d = this.input.keyboard.addKey("D");
-  //teclaf = this.input.keyboard.addKey("F");
 }
 
-function update() {
-  if (gameOver) {
-    return;
-  }
-
-  if (cursors.left.isDown) {
-    player.setVelocityX(-100);
-    player.anims.play("left", true);
-  } else if (cursors.right.isDown) {
-    player.setVelocityX(100);
-    player.anims.play("right", true);
+cena1.update = function () {
+if (cursors.left.isDown) {
+  player1.setVelocityX(-100);
+  player1.anims.play("left", true);
   } else if (cursors.up.isDown) {
-    player.setVelocityY(-100);
-    player.anims.play("up", true);
+  player1.setVelocityY(-100);
+  player1.anims.play("up", true);
+  } else if (cursors.right.isDown) {
+  player1.setVelocityX(100);
+  player1.anims.play("right", true);
   } else if (cursors.down.isDown) {
-    player.setVelocityY(100);
-    player.anims.play("down", true);
+  player1.setVelocityY(100);
+  player1.anims.play("down", true);
   } else {
-    player.setVelocityX(0);
-    player.setVelocityY(0);
-    player.anims.play("turn");
+  player1.setVelocityX(0);
+  player1.setVelocityY(0);
+  player1.anims.play("turn");
   }
 
-  if (a.isDown) {
+if (A.isDown){
     player2.setVelocityX(-100);
-    player2.anims.play("a", true);
-  } else if (d.isDown) {
+    player2.anims.play("A", true);
+  } else if (D.isDown){
     player2.setVelocityX(100);
-    player2.anims.play("d", true);
-  } else if (w.isDown) {
+    player2.anims.play("D", true);
+  } else if (W.isDown){
     player2.setVelocityY(-100);
-    player2.anims.play("w", true);
-  } else if (s.isDown) {
+    player2.anims.play("W", true);
+  } else if (S.isDown){
     player2.setVelocityY(100);
-    player2.anims.play("s", true);
+    player2.anims.play("S", true);
   } else {
     player2.setVelocityX(0);
     player2.setVelocityY(0);
     player2.anims.play("turn2");
   }
-
-  //  else
-  //  {
-  //     player.setVelocityY(0);
-
-  //      player.anims.play('turn');
-  //  }
-
-  //    if (cursors.up.isDown && player.body.touching.down)
-  //    {
-  //       player.setVelocityY(-330);
-  //  }
 }
 
-function collectStar(player, star) {
-  star.disableBody(true, true);
-
-  //  Add and update the score
-  score += 10;
-  scoreText.setText("Score: " + score);
-
-  if (stars.countActive(true) === 0) {
-    //  A new batch of stars to collect
-    stars.children.iterate(function (child) {
-      child.enableBody(true, child.x, 0, true, true);
-    });
-
-    var x =
-      player.x < 400
-        ? Phaser.Math.Between(400, 800)
-        : Phaser.Math.Between(0, 400);
-
-    var bomb = bombs.create(x, 16, "bomb");
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    bomb.allowGravity = false;
-  }
+function hitTiles(player1, labirinto) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
 }
 
-function hitBomb(player, bomb) {
-  this.physics.pause();
-
-  player.setTint(0xc71a82);
-
-  player.anims.play("turn");
-
-  gameOver = true;
+function hitTiles2(player2, labirinto) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
 }
+
+function hitPlayer (player1, player2) {
+  // Ao colidir com a parede, toca o efeito sonoro
+  parede.play();
+}
+
 export { cena1 };
