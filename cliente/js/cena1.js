@@ -47,8 +47,8 @@ cena1.preload = function () {
 
   //Sprite tela cheia
   this.load.spritesheet("vida", "assets/vida.png", {
-    frameWidth: 75,
-    frameHeight: 40,
+    frameWidth: 150,
+    frameHeight: 75,
   });
 };
 
@@ -189,7 +189,7 @@ cena1.create = function () {
   );
 
   vida = 5;
-  placarVida = this.add.sprite(100 - 16, 450, "vida", 0).setScrollFactor(0);
+  placarVida = this.add.sprite(900 - 16, 50, "vida", 0).setScrollFactor(0);
 
   var physics = this.physics;
 
