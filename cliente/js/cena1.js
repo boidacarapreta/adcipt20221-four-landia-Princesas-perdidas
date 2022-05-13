@@ -18,6 +18,9 @@ var A;
 var W;
 var S;
 var D;
+var vida;
+var placarVida;
+var gameOver;
 
 cena1.preload = function () {
   this.load.image("tileset0", "assets/terreno.png");
@@ -29,7 +32,7 @@ cena1.preload = function () {
   });
   this.load.audio("musiquinha", "assets/musiquinha.mp3");
   this.load.audio("efeito", "assets/efeito.mp3");
-  
+
   // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
     frameWidth: 32,
@@ -38,10 +41,16 @@ cena1.preload = function () {
 
   //Sprite tela cheia
   this.load.spritesheet("telacheia", "assets/telacheia2.png", {
-    frameWidth: 50,
-    frameHeight: 52,
+    frameWidth: 75,
+    frameHeight: 37,
   });
-}
+
+  //Sprite tela cheia
+  this.load.spritesheet("vida", "assets/vida.png", {
+    frameWidth: 75,
+    frameHeight: 40,
+  });
+};
 
 cena1.create = function () {
   // Trilha sonora
@@ -158,7 +167,7 @@ cena1.create = function () {
   this.cameras.main.setZoom(1);
 
   //Tela cheia
-  var button2 = this.add
+  var button2 = this.add //mudar onde o sprite fica para conseguir colocar no zoom 2
     .image(100 - 16, 450, "telacheia", 0)
     .setOrigin(1, 0)
     .setInteractive()
@@ -179,13 +188,16 @@ cena1.create = function () {
     this
   );
 
+  vida = 5;
+  placarVida = this.add.sprite(100 - 16, 450, "vida", 0).setScrollFactor(0);
+
   var physics = this.physics;
 
   cursors = this.input.keyboard.createCursorKeys();
 
   this.physics.add.collider(player1, tileset0);
   this.physics.add.collider(player2, tileset0);
-  this.physics.add.overlap(player1, player2);
+  this.physics.add.collider(player1, player2, hitPlayer, null, this);
 
   //worldLayer.setCollisionBetween();
   //worldLayer.setCollisionByProperty({ collides: true });
@@ -194,38 +206,51 @@ cena1.create = function () {
   physics.add.collider(player1, labirinto, hitTiles, null, this);
   physics.add.collider(player2, labirinto, hitTiles2, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
-
-}
+};
 
 cena1.update = function () {
-if (cursors.left.isDown) {
-  player1.setVelocityX(-100);
-  player1.anims.play("left", true);
-  } else if (cursors.up.isDown) {
-  player1.setVelocityY(-100);
-  player1.anims.play("up", true);
-  } else if (cursors.right.isDown) {
-  player1.setVelocityX(100);
-  player1.anims.play("right", true);
-  } else if (cursors.down.isDown) {
-  player1.setVelocityY(100);
-  player1.anims.play("down", true);
-  } else {
-  player1.setVelocityX(0);
-  player1.setVelocityY(0);
-  player1.anims.play("turn");
+  if (gameOver) {
+    this.scene.start(cena2);
   }
 
-if (A.isDown){
+  if (cursors.left.isDown) {
+    player1.setVelocityX(-100);
+  } else if (cursors.right.isDown) {
+    player1.setVelocityX(100);
+  } else {
+    player1.setVelocityX(0);
+  }
+
+  if (cursors.up.isDown) {
+    player1.setVelocityY(-100);
+  } else if (cursors.down.isDown) {
+    player1.setVelocityY(100);
+  } else {
+    player1.setVelocityY(0);
+  }
+
+  if (cursors.left.isDown) {
+    player1.anims.play("left", true);
+  } else if (cursors.right.isDown) {
+    player1.anims.play("right", true);
+  } else if (cursors.up.isDown) {
+    player1.anims.play("up", true);
+  } else if (cursors.down.isDown) {
+    player1.anims.play("down", true);
+  } else {
+    player1.anims.play("turn");
+  }
+
+  if (A.isDown) {
     player2.setVelocityX(-100);
     player2.anims.play("A", true);
-  } else if (D.isDown){
+  } else if (D.isDown) {
     player2.setVelocityX(100);
     player2.anims.play("D", true);
-  } else if (W.isDown){
+  } else if (W.isDown) {
     player2.setVelocityY(-100);
     player2.anims.play("W", true);
-  } else if (S.isDown){
+  } else if (S.isDown) {
     player2.setVelocityY(100);
     player2.anims.play("S", true);
   } else {
@@ -233,7 +258,7 @@ if (A.isDown){
     player2.setVelocityY(0);
     player2.anims.play("turn2");
   }
-}
+};
 
 function hitTiles(player1, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
@@ -245,9 +270,17 @@ function hitTiles2(player2, labirinto) {
   parede.play();
 }
 
-function hitPlayer (player1, player2) {
-  // Ao colidir com a parede, toca o efeito sonoro
-  parede.play();
+function hitPlayer(player1, player2) {
+  // Personagens se chocam
+  vida--;
+  placarVida.setFrame(5 - vida);
+  console.log(vida, 5 - vida);
+  player2.x = 50;
+  player2.y = 50;
+
+  if (vida === 0) {
+    gameOver = true;
+  }
 }
 
 export { cena1 };
