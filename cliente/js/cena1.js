@@ -275,8 +275,8 @@ function hitPlayer(player1, player2) {
   vida--;
   placarVida.setFrame(5 - vida);
   console.log(vida, 5 - vida);
-  player2.x = 50;
-  player2.y = 50;
+  player2.x = 550;
+  player2.y = 650;
 
   if (vida === 0) {
     gameOver = true;
