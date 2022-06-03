@@ -243,6 +243,34 @@ cena1.update = function () {
 
   if (A.isDown) {
     player2.setVelocityX(-100);
+  } else if (D.isDown) {
+    player2.setVelocityX(100);
+  } else {
+    player2.setVelocityX(0);
+  }
+
+  if (W.isDown) {
+    player2.setVelocityY(-100);
+  } else if (S.isDown) {
+    player2.setVelocityY(100);
+  } else {
+    player2.setVelocityY(0);
+  }
+
+  if (A.isDown) {
+    player2.anims.play("A", true);
+  } else if (D.isDown) {
+    player2.anims.play("D", true);
+  } else if (W.isDown) {
+    player2.anims.play("W", true);
+  } else if (S.isDown) {
+    player2.anims.play("S", true);
+  } else {
+    player2.anims.play("turn2");
+  }
+/*
+  if (A.isDown) {
+    player2.setVelocityX(-100);
     player2.anims.play("A", true);
   } else if (D.isDown) {
     player2.setVelocityX(100);
@@ -258,8 +286,9 @@ cena1.update = function () {
     player2.setVelocityY(0);
     player2.anims.play("turn2");
   }
-};
 
+*/
+};
 function hitTiles(player1, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
   parede.play();
