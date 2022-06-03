@@ -21,6 +21,7 @@ var D;
 var vida;
 var placarVida;
 var gameOver;
+var socket;
 
 cena1.preload = function () {
   this.load.image("tileset0", "assets/terreno.png");
@@ -57,6 +58,8 @@ cena1.create = function () {
   //trilha = this.sound.add("musiquinha");
   //trilha.play();
   //trilha.setLoop(true);
+
+  socket = io("https://still-tundra-75872.herokuapp.com/");
 
   parede = this.sound.add("efeito");
 
