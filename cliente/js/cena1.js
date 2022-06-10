@@ -61,6 +61,132 @@ cena1.create = function () {
 
   socket = io("https://still-tundra-75872.herokuapp.com/");
 
+  socket.on("jogadores", (jogadores) => {
+    if (jogadores.primeiro === socket.id) {
+      // Define jogador como o primeiro
+      jogador = 1;
+
+      // Personagens colidem com os limites da cena
+      player1.setCollideWorldBounds(true);
+
+      // Detecção de colisão: terreno
+      physics.add.collider(player1, terreno, hitCave, null, this);
+
+      // Detecção de colisão e disparo de evento: ARCas
+      physics.add.collider(player1, ARCas, hitARCa, null, this);
+
+      // Câmera seguindo o personagem 1
+      cameras.main.startFollow(player1);
+
+      navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((stream) => {
+          midias = stream;
+        })
+        .catch((error) => console.log(error));
+    } else if (jogadores.segundo === socket.id) {
+      // Define jogador como o segundo
+      jogador = 2;
+
+      // Personagens colidem com os limites da cena
+      player2.setCollideWorldBounds(true);
+
+      // Detecção de colisão: terreno
+      physics.add.collider(player2, terreno, hitCave, null, this);
+
+      // Detecção de colisão e disparo de evento: ARCas
+      physics.add.collider(player2, ARCas, hitARCa, null, this);
+
+      // Câmera seguindo o personagem 2
+      cameras.main.startFollow(player2);
+
+      navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((stream) => {
+          midias = stream;
+          localConnection = new RTCPeerConnection(ice_servers);
+          midias
+            .getTracks()
+            .forEach((track) => localConnection.addTrack(track, midias));
+          localConnection.onicecandidate = ({ candidate }) => {
+            candidate &&
+              socket.emit("candidate", jogadores.primeiro, candidate);
+          };
+          console.log(midias);
+          localConnection.ontrack = ({ streams: [midias] }) => {
+            audio.srcObject = midias;
+          };
+          localConnection
+            .createOffer()
+            .then((offer) => localConnection.setLocalDescription(offer))
+            .then(() => {
+              socket.emit(
+                "offer",
+                jogadores.primeiro,
+                localConnection.localDescription
+              );
+            });
+        })
+        .catch((error) => console.log(error));
+    }
+
+    // Os dois jogadores estão conectados
+    console.log(jogadores);
+    if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
+      // Contagem regressiva em segundos (1.000 milissegundos)
+      timer = 60;
+      timedEvent = time.addEvent({
+        delay: 1000,
+        callback: countdown,
+        callbackScope: this,
+        loop: true,
+      });
+    }
+  });
+
+  socket.on("offer", (socketId, description) => {
+    remoteConnection = new RTCPeerConnection(ice_servers);
+    midias
+      .getTracks()
+      .forEach((track) => remoteConnection.addTrack(track, midias));
+    remoteConnection.onicecandidate = ({ candidate }) => {
+      candidate && socket.emit("candidate", socketId, candidate);
+    };
+    remoteConnection.ontrack = ({ streams: [midias] }) => {
+      audio.srcObject = midias;
+    };
+    remoteConnection
+      .setRemoteDescription(description)
+      .then(() => remoteConnection.createAnswer())
+      .then((answer) => remoteConnection.setLocalDescription(answer))
+      .then(() => {
+        socket.emit("answer", socketId, remoteConnection.localDescription);
+      });
+  });
+
+  socket.on("answer", (description) => {
+    localConnection.setRemoteDescription(description);
+  });
+
+  socket.on("candidate", (candidate) => {
+    const conn = localConnection || remoteConnection;
+    conn.addIceCandidate(new RTCIceCandidate(candidate));
+  });
+
+  // Desenhar o outro jogador
+  socket.on("desenharOutroJogador", ({ frame, x, y }) => {
+    if (jogador === 1) {
+      player2.setFrame(frame);
+      player2.x = x;
+      player2.y = y;
+    } else if (jogador === 2) {
+      player1.setFrame(frame);
+      player1.x = x;
+      player1.y = y;
+    }
+  });
+
+
   parede = this.sound.add("efeito");
 
   map = this.make.tilemap({ key: "map" });
@@ -207,12 +333,62 @@ cena1.create = function () {
 
   // Detecção de colisão e disparo de evento: ARCas
   physics.add.collider(player1, labirinto, hitTiles, null, this);
-  physics.add.collider(player2, labirinto, hitTiles2, null, this);
+  physics.add.collider(player2, labirinto, hitTiles, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
 };
 
 cena1.update = function () {
-  if (gameOver) {
+
+  // Controle do personagem por direcionais
+  if (jogador === 1 && vida >= 0) {
+    if (cursors.left.isDown) {
+      player1.body.setVelocityX(-100);
+      player1.anims.play("left1", true);
+    } else if (cursors.right.isDown) {
+      player1.body.setVelocityX(100);
+      player1.anims.play("right1", true);
+    } else {
+      player1.body.setVelocity(0);
+      player1.anims.play("stopped1", true);
+    }
+    if (cursors.up.isDown) {
+      player1.body.setVelocityY(-100);
+    } else if (cursors.down.isDown) {
+      player1.body.setVelocityY(100);
+    } else {
+      player1.body.setVelocityY(0);
+    }
+    socket.emit("estadoDoJogador", {
+      frame: player1.anims.getFrameName(),
+      x: player1.body.x,
+      y: player1.body.y,
+    });
+  } else if (jogador === 2 && vida >= 0) {
+    if (cursors.left.isDown) {
+      player2.body.setVelocityX(-100);
+      player2.anims.play("left2", true);
+    } else if (cursors.right.isDown) {
+      player2.body.setVelocityX(100);
+      player2.anims.play("right2", true);
+    } else {
+      player2.body.setVelocity(0);
+      player2.anims.play("stopped2", true);
+    }
+    if (cursors.up.isDown) {
+      player2.body.setVelocityY(-100);
+    } else if (cursors.down.isDown) {
+      player2.body.setVelocityY(100);
+    } else {
+      player2.body.setVelocityY(0);
+    }
+    socket.emit("estadoDoJogador", {
+      frame: player2.anims.getFrameName(),
+      x: player2.body.x,
+      y: player2.body.y,
+    });
+  }
+};
+ /* if (gameOver) {
     this.scene.start(cena2);
   }
 
@@ -271,7 +447,7 @@ cena1.update = function () {
   } else {
     player2.anims.play("turn2");
   }
-/*
+
   if (A.isDown) {
     player2.setVelocityX(-100);
     player2.anims.play("A", true);
@@ -290,14 +466,10 @@ cena1.update = function () {
     player2.anims.play("turn2");
   }
 
-*/
-};
-function hitTiles(player1, labirinto) {
-  // Ao colidir com a parede, toca o efeito sonoro
-  parede.play();
-}
 
-function hitTiles2(player2, labirinto) {
+};*/
+
+function hitTiles(player1, player2, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
   parede.play();
 }
