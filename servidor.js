@@ -4,7 +4,7 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
     origins: [
-      "https://cliente.ifsc.cloud",
+      "https://princesasperdidas.ifsc.cloud",
       "https://*.gitpod.io"
     ],
   },
@@ -58,4 +58,5 @@ io.on("connection", (socket) => {
 });
 
 // Abrir porta para HTTPS/WSS
+app.use(express.static("./"));
 server.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));

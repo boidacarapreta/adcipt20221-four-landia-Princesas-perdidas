@@ -20,7 +20,16 @@ var gameOver;
 var jogador;
 var socket;
 var ice_servers = {
-  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  iceServers: [
+    {
+      urls: "stun:ifsc.cloud",
+    },
+    {
+      urls: "turns:ifsc.cloud",
+      username: "etorresini",
+      credential: "matrix",
+    },
+  ],
 };
 var localConnection;
 var remoteConnection;
@@ -152,10 +161,12 @@ cena1.create = function () {
     repeat: -1,
   });
 
+  /*
   W = this.input.keyboard.addKey("W");
   S = this.input.keyboard.addKey("S");
   A = this.input.keyboard.addKey("A");
   D = this.input.keyboard.addKey("D");
+  */
 
   // Camada 1: terreno
   labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
@@ -198,7 +209,7 @@ cena1.create = function () {
   cursors = this.input.keyboard.createCursorKeys();
 
   var physics = this.physics;
-  
+
   physics.add.collider(player1, tileset0);
   physics.add.collider(player2, tileset0);
   physics.add.collider(player1, player2, hitPlayer, null, this);
@@ -210,8 +221,11 @@ cena1.create = function () {
   //physics.add.collider(player1, labirinto, hitTiles, null, this);
   //physics.add.collider(player2, labirinto, hitTiles, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
-  
-  socket = io("https://still-tundra-75872.herokuapp.com/");
+
+  socket = io();
+  var physics = this.physics;
+  var cameras = this.cameras;
+  var time = this.time;
 
   socket.on("jogadores", (jogadores) => {
     if (jogadores.primeiro === socket.id) {
@@ -278,6 +292,7 @@ cena1.create = function () {
 
     // Os dois jogadores estão conectados
     console.log(jogadores);
+    /*
     if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
       // Contagem regressiva em segundos (1.000 milissegundos)
       timer = 60;
@@ -288,6 +303,7 @@ cena1.create = function () {
         loop: true,
       });
     }
+    */
   });
 
   socket.on("offer", (socketId, description) => {
@@ -339,13 +355,13 @@ cena1.update = function () {
   if (jogador === 1 && vida >= 0) {
     if (cursors.left.isDown) {
       player1.body.setVelocityX(-100);
-      player1.anims.play("left1", true);
+      player1.anims.play("left", true);
     } else if (cursors.right.isDown) {
       player1.body.setVelocityX(100);
-      player1.anims.play("right1", true);
+      player1.anims.play("right", true);
     } else {
       player1.body.setVelocity(0);
-      player1.anims.play("stopped1", true);
+      player1.anims.play("turn", true);
     }
     if (cursors.up.isDown) {
       player1.body.setVelocityY(-100);
@@ -356,19 +372,19 @@ cena1.update = function () {
     }
     socket.emit("estadoDoJogador", {
       frame: player1.anims.getFrameName(),
-      x: player1.body.x,
-      y: player1.body.y,
+      x: player1.body.x + 16,
+      y: player1.body.y + 24,
     });
   } else if (jogador === 2 && vida >= 0) {
     if (cursors.left.isDown) {
       player2.body.setVelocityX(-100);
-      player2.anims.play("left2", true);
+      player2.anims.play("A", true);
     } else if (cursors.right.isDown) {
       player2.body.setVelocityX(100);
-      player2.anims.play("right2", true);
+      player2.anims.play("D", true);
     } else {
       player2.body.setVelocity(0);
-      player2.anims.play("stopped2", true);
+      player2.anims.play("turn2", true);
     }
     if (cursors.up.isDown) {
       player2.body.setVelocityY(-100);
@@ -379,88 +395,88 @@ cena1.update = function () {
     }
     socket.emit("estadoDoJogador", {
       frame: player2.anims.getFrameName(),
-      x: player2.body.x,
-      y: player2.body.y,
+      x: player2.body.x + 16,
+      y: player2.body.y + 24,
     });
   }
 };
- /* if (gameOver) {
-    this.scene.start(cena2);
-  }
+/* if (gameOver) {
+   this.scene.start(cena2);
+ }
 
-  if (cursors.left.isDown) {
-    player1.setVelocityX(-100);
-  } else if (cursors.right.isDown) {
-    player1.setVelocityX(100);
-  } else {
-    player1.setVelocityX(0);
-  }
+ if (cursors.left.isDown) {
+   player1.setVelocityX(-100);
+ } else if (cursors.right.isDown) {
+   player1.setVelocityX(100);
+ } else {
+   player1.setVelocityX(0);
+ }
 
-  if (cursors.up.isDown) {
-    player1.setVelocityY(-100);
-  } else if (cursors.down.isDown) {
-    player1.setVelocityY(100);
-  } else {
-    player1.setVelocityY(0);
-  }
+ if (cursors.up.isDown) {
+   player1.setVelocityY(-100);
+ } else if (cursors.down.isDown) {
+   player1.setVelocityY(100);
+ } else {
+   player1.setVelocityY(0);
+ }
 
-  if (cursors.left.isDown) {
-    player1.anims.play("left", true);
-  } else if (cursors.right.isDown) {
-    player1.anims.play("right", true);
-  } else if (cursors.up.isDown) {
-    player1.anims.play("up", true);
-  } else if (cursors.down.isDown) {
-    player1.anims.play("down", true);
-  } else {
-    player1.anims.play("turn");
-  }
+ if (cursors.left.isDown) {
+   player1.anims.play("left", true);
+ } else if (cursors.right.isDown) {
+   player1.anims.play("right", true);
+ } else if (cursors.up.isDown) {
+   player1.anims.play("up", true);
+ } else if (cursors.down.isDown) {
+   player1.anims.play("down", true);
+ } else {
+   player1.anims.play("turn");
+ }
 
-  if (A.isDown) {
-    player2.setVelocityX(-100);
-  } else if (D.isDown) {
-    player2.setVelocityX(100);
-  } else {
-    player2.setVelocityX(0);
-  }
+ if (A.isDown) {
+   player2.setVelocityX(-100);
+ } else if (D.isDown) {
+   player2.setVelocityX(100);
+ } else {
+   player2.setVelocityX(0);
+ }
 
-  if (W.isDown) {
-    player2.setVelocityY(-100);
-  } else if (S.isDown) {
-    player2.setVelocityY(100);
-  } else {
-    player2.setVelocityY(0);
-  }
+ if (W.isDown) {
+   player2.setVelocityY(-100);
+ } else if (S.isDown) {
+   player2.setVelocityY(100);
+ } else {
+   player2.setVelocityY(0);
+ }
 
-  if (A.isDown) {
-    player2.anims.play("A", true);
-  } else if (D.isDown) {
-    player2.anims.play("D", true);
-  } else if (W.isDown) {
-    player2.anims.play("W", true);
-  } else if (S.isDown) {
-    player2.anims.play("S", true);
-  } else {
-    player2.anims.play("turn2");
-  }
+ if (A.isDown) {
+   player2.anims.play("A", true);
+ } else if (D.isDown) {
+   player2.anims.play("D", true);
+ } else if (W.isDown) {
+   player2.anims.play("W", true);
+ } else if (S.isDown) {
+   player2.anims.play("S", true);
+ } else {
+   player2.anims.play("turn2");
+ }
 
-  if (A.isDown) {
-    player2.setVelocityX(-100);
-    player2.anims.play("A", true);
-  } else if (D.isDown) {
-    player2.setVelocityX(100);
-    player2.anims.play("D", true);
-  } else if (W.isDown) {
-    player2.setVelocityY(-100);
-    player2.anims.play("W", true);
-  } else if (S.isDown) {
-    player2.setVelocityY(100);
-    player2.anims.play("S", true);
-  } else {
-    player2.setVelocityX(0);
-    player2.setVelocityY(0);
-    player2.anims.play("turn2");
-  }
+ if (A.isDown) {
+   player2.setVelocityX(-100);
+   player2.anims.play("A", true);
+ } else if (D.isDown) {
+   player2.setVelocityX(100);
+   player2.anims.play("D", true);
+ } else if (W.isDown) {
+   player2.setVelocityY(-100);
+   player2.anims.play("W", true);
+ } else if (S.isDown) {
+   player2.setVelocityY(100);
+   player2.anims.play("S", true);
+ } else {
+   player2.setVelocityX(0);
+   player2.setVelocityY(0);
+   player2.anims.play("turn2");
+ }
 
 
 };*/
