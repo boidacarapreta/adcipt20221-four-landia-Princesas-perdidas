@@ -81,7 +81,7 @@ cena1.create = function () {
   chao = map.createStaticLayer("chao", tileset0, 0, 0);
 
   // Jogador 1 - controles/animação
-  player1 = this.physics.add.sprite(100, 90, "bruxa");
+  player1 = this.physics.add.sprite(1150, 650, "bruxa");
   //player1.setCollideWorldBounds(true);
 
   //  Animação do player1
@@ -120,7 +120,7 @@ cena1.create = function () {
   //player2.setCollideWorldBounds(true);
 
   this.anims.create({
-    key: "S",
+    key: "down2",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 0,
       end: 3,
@@ -129,7 +129,7 @@ cena1.create = function () {
     repeat: -1,
   });
   this.anims.create({
-    key: "A",
+    key: "left2",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 4,
       end: 7,
@@ -143,7 +143,7 @@ cena1.create = function () {
     frameRate: 20,
   });
   this.anims.create({
-    key: "D",
+    key: "right2",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 8,
       end: 11,
@@ -152,7 +152,7 @@ cena1.create = function () {
     repeat: -1,
   });
   this.anims.create({
-    key: "W",
+    key: "up2",
     frames: this.anims.generateFrameNumbers("branca", {
       start: 12,
       end: 15,
@@ -240,6 +240,8 @@ cena1.create = function () {
 
       // Câmera seguindo o personagem 1
       cameras.main.startFollow(player1);
+
+      placarVida.setVisible(false);
 
       navigator.mediaDevices
         .getUserMedia({ video: false, audio: true })
@@ -350,9 +352,8 @@ cena1.create = function () {
 };
 
 cena1.update = function () {
-
   // Controle do personagem por direcionais
-  if (jogador === 1 && vida >= 0) {
+  /*if (jogador === 1 && vida >= 0) {
     if (cursors.left.isDown) {
       player1.body.setVelocityX(-100);
       player1.anims.play("left", true);
@@ -399,87 +400,99 @@ cena1.update = function () {
       y: player2.body.y + 24,
     });
   }
-};
-/* if (gameOver) {
+};*/
+ if (gameOver) {
    this.scene.start(cena2);
  }
+  if (jogador === 1 && vida >= 0) {
+    if (cursors.left.isDown) {
+      player1.setVelocityX(-100);
+    } else if (cursors.right.isDown) {
+      player1.setVelocityX(100);
+    } else {
+      player1.setVelocityX(0);
+    }
 
- if (cursors.left.isDown) {
-   player1.setVelocityX(-100);
- } else if (cursors.right.isDown) {
-   player1.setVelocityX(100);
- } else {
-   player1.setVelocityX(0);
- }
+    if (cursors.up.isDown) {
+      player1.setVelocityY(-100);
+    } else if (cursors.down.isDown) {
+      player1.setVelocityY(100);
+    } else {
+      player1.setVelocityY(0);
+    }
 
- if (cursors.up.isDown) {
-   player1.setVelocityY(-100);
- } else if (cursors.down.isDown) {
-   player1.setVelocityY(100);
- } else {
-   player1.setVelocityY(0);
- }
+    if (cursors.left.isDown) {
+      player1.anims.play("left", true);
+    } else if (cursors.right.isDown) {
+      player1.anims.play("right", true);
+    } else if (cursors.up.isDown) {
+      player1.anims.play("up", true);
+    } else if (cursors.down.isDown) {
+      player1.anims.play("down", true);
+    } else {
+      player1.anims.play("turn");
+    }
 
- if (cursors.left.isDown) {
-   player1.anims.play("left", true);
- } else if (cursors.right.isDown) {
-   player1.anims.play("right", true);
- } else if (cursors.up.isDown) {
-   player1.anims.play("up", true);
- } else if (cursors.down.isDown) {
-   player1.anims.play("down", true);
- } else {
-   player1.anims.play("turn");
- }
+    socket.emit("estadoDoJogador", {
+      frame: player1.anims.getFrameName(),
+      x: player1.body.x + 16,
+      y: player1.body.y + 24,
+    });
+    
+  } else if (jogador === 2 && vida >= 0) {
+    if (cursors.left.isDown) {
+      player2.setVelocityX(-100);
+    } else if (cursors.right.isDown) {
+      player2.setVelocityX(100);
+    } else {
+      player2.setVelocityX(0);
+    }
 
- if (A.isDown) {
-   player2.setVelocityX(-100);
- } else if (D.isDown) {
-   player2.setVelocityX(100);
- } else {
-   player2.setVelocityX(0);
- }
+    if (cursors.up.isDown) {
+      player2.setVelocityY(-100);
+    } else if (cursors.down.isDown) {
+      player2.setVelocityY(100);
+    } else {
+      player2.setVelocityY(0);
+    }
 
- if (W.isDown) {
-   player2.setVelocityY(-100);
- } else if (S.isDown) {
-   player2.setVelocityY(100);
- } else {
-   player2.setVelocityY(0);
- }
+    if (cursors.left.isDown) {
+      player2.anims.play("left2", true);
+    } else if (cursors.right.isDown) {
+      player2.anims.play("right2", true);
+    } else if (cursors.up.isDown) {
+      player2.anims.play("up2", true);
+    } else if (cursors.down.isDown) {
+      player2.anims.play("down2", true);
+    } else {
+      player2.anims.play("turn2");
+    }
 
- if (A.isDown) {
-   player2.anims.play("A", true);
- } else if (D.isDown) {
-   player2.anims.play("D", true);
- } else if (W.isDown) {
-   player2.anims.play("W", true);
- } else if (S.isDown) {
-   player2.anims.play("S", true);
- } else {
-   player2.anims.play("turn2");
- }
+    if (cursors.left.isDown) {
+      player2.setVelocityX(-100);
+      player2.anims.play("left2", true);
+    } else if (cursors.right.isDown) {
+      player2.setVelocityX(100);
+      player2.anims.play("right2", true);
+    } else if (cursors.up.isDown) {
+      player2.setVelocityY(-100);
+      player2.anims.play("up2", true);
+    } else if (cursors.down.isDown) {
+      player2.setVelocityY(100);
+      player2.anims.play("down2", true);
+    } else {
+      player2.setVelocityX(0);
+      player2.setVelocityY(0);
+      player2.anims.play("turn2");
+    }
 
- if (A.isDown) {
-   player2.setVelocityX(-100);
-   player2.anims.play("A", true);
- } else if (D.isDown) {
-   player2.setVelocityX(100);
-   player2.anims.play("D", true);
- } else if (W.isDown) {
-   player2.setVelocityY(-100);
-   player2.anims.play("W", true);
- } else if (S.isDown) {
-   player2.setVelocityY(100);
-   player2.anims.play("S", true);
- } else {
-   player2.setVelocityX(0);
-   player2.setVelocityY(0);
-   player2.anims.play("turn2");
- }
-
-
-};*/
+    socket.emit("estadoDoJogador", {
+      frame: player2.anims.getFrameName(),
+      x: player2.body.x + 16,
+      y: player2.body.y + 24,
+    });
+  }
+};
 
 function hitTiles(player1, player2, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
@@ -491,8 +504,8 @@ function hitPlayer(player1, player2) {
   vida--;
   placarVida.setFrame(5 - vida);
   console.log(vida, 5 - vida);
-  player2.x = 550;
-  player2.y = 650;
+  player2.x = 150;
+  player2.y = 90;
 
   if (vida === 0) {
     gameOver = true;
