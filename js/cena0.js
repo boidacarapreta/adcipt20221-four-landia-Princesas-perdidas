@@ -4,11 +4,14 @@ import { cena1 } from "./cena1.js";
 // Criar a cena 0
 var cena0 = new Phaser.Scene("Cena 0");
 
+//https://www.nicepng.com/downpng/u2q8q8t4a9q8y3e6_youtube-button-png-youtube-play-button-cute-youtube/
+//Link para imagens png
+
 cena0.preload = function () {
   // Imagem de fundo
-  this.load.image("abertura", "assets/cena0.jpg");
+  this.load.image("abertura", "assets/cena0.png");
   
-  this.load.image("botao", "assets/botao3.png");
+  this.load.image("botao", "assets/play2.png");
   
   this.load.spritesheet("telacheia", "assets/telacheia2.png", {
     frameWidth: 50,

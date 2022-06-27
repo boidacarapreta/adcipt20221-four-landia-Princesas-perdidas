@@ -45,7 +45,7 @@ cena1.preload = function () {
     frameHeight: 48,
   });
   this.load.audio("musiquinha", "assets/musiquinha.mp3");
-  this.load.audio("efeito", "assets/efeito.mp3");
+  this.load.audio("efeito", "assets/coli-arvore.mp3");
 
   // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
