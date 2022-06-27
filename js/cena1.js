@@ -78,7 +78,7 @@ cena1.create = function () {
   // Primeira "tileset0" é o nome que está no tiled - Segundo "tileset0" é a key do preload
   tileset0 = map.addTilesetImage("tileset0", "tileset0");
 
-  chao = map.createStaticLayer("chao", tileset0, 0, 0);
+  chao = map.createLayer("chao", tileset0, 0, 0);
 
   // Jogador 1 - controles/animação
   player1 = this.physics.add.sprite(1150, 650, "bruxa");
@@ -169,7 +169,7 @@ cena1.create = function () {
   */
 
   // Camada 1: terreno
-  labirinto = map.createStaticLayer("labirinto", tileset0, 0, 0);
+  labirinto = map.createLayer("labirinto", tileset0, 0, 0);
   labirinto.setCollisionByProperty({ collides: true });
 
   // Cena (960x960) maior que a tela (800x600)
@@ -222,7 +222,7 @@ cena1.create = function () {
   //physics.add.collider(player2, labirinto, hitTiles, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
 
-  socket = io();
+  socket = io("https://still-tundra-75872.herokuapp.com/");
   var physics = this.physics;
   var cameras = this.cameras;
   var time = this.time;
