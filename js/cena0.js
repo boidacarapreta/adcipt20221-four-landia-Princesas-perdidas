@@ -11,7 +11,7 @@ cena0.preload = function () {
   // Imagem de fundo
   this.load.image("abertura", "assets/cena0.png");
   
-  this.load.image("botao", "assets/play2.png");
+  this.load.image("botao", "assets/play.png");
   
   this.load.spritesheet("telacheia", "assets/telacheia2.png", {
     frameWidth: 50,
