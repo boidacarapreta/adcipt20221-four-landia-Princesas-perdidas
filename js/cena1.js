@@ -15,6 +15,7 @@ var cameras;
 var parede;
 var labirinto;
 var vida;
+var moeda;
 var placarVida;
 var gameOver;
 var jogador;
@@ -37,16 +38,20 @@ var midias;
 const audio = document.querySelector("audio");
 
 cena1.preload = function () {
+  //Tiled
   this.load.image("tileset0", "assets/terreno.png");
   this.load.tilemapTiledJSON("map", "assets/teste4.json");
+  
+  //Audios
+  this.load.audio("musiquinha", "assets/musiquinha.mp3");
+  this.load.audio("efeito", "assets/coli-arvore.mp3");
+  this.load.audio("moeda", "assets/coletamoeda.mp3");
+  
   // Jogador 1
   this.load.spritesheet("bruxa", "assets/bruxa.png", {
     frameWidth: 32,
     frameHeight: 48,
   });
-  this.load.audio("musiquinha", "assets/musiquinha.mp3");
-  this.load.audio("efeito", "assets/coli-arvore.mp3");
-
   // Jogador 2
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
     frameWidth: 32,
@@ -64,10 +69,16 @@ cena1.preload = function () {
     frameWidth: 150,
     frameHeight: 75,
   });
+
+  //Moeda
+  this.load.spritesheet("moeda", "assets/moeda.png", {
+    frameWidth: 32,
+    frameHeight: 43,
+  });
 };
 
 cena1.create = function () {
-  // Trilha sonora
+  //Trilha sonora
   //trilha = this.sound.add("musiquinha");
   //trilha.play();
   //trilha.setLoop(true);
