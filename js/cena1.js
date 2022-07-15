@@ -40,7 +40,7 @@ const audio = document.querySelector("audio");
 cena1.preload = function () {
   //Tiled
   this.load.image("tileset0", "assets/terreno2.png");
-  this.load.tilemapTiledJSON("map", "assets/labirintopronto.json");
+  this.load.tilemapTiledJSON("map", "assets/labirintopronto2.json");
 
   //Audios
   this.load.audio("musiquinha", "assets/musiquinha.mp3");
@@ -70,11 +70,8 @@ cena1.preload = function () {
     frameHeight: 75,
   });
 
-  //Moeda
-  this.load.spritesheet("moeda", "assets/moeda.png", {
-    frameWidth: 32,
-    frameHeight: 43,
-  });
+  //Baú
+
 };
 
 cena1.create = function () {
@@ -91,8 +88,13 @@ cena1.create = function () {
 
   chao = map.createLayer("chao", tileset0, 0, 0);
 
+  // Camada 1: terreno
+  labirinto = map.createLayer("labirinto", tileset0, 0, 0);
+  labirinto.setCollisionByProperty({ collides: true });
+
+
   // Jogador 1 - controles/animação
-  player1 = this.physics.add.sprite(1150, 650, "bruxa");
+  player1 = this.physics.add.sprite(2000, 1020, "bruxa");
   //player1.setCollideWorldBounds(true);
 
   //  Animação do player1
@@ -127,7 +129,7 @@ cena1.create = function () {
   });
 
   // Jogador 2 - controles/animação
-  player2 = this.physics.add.sprite(150, 90, "branca");
+  player2 = this.physics.add.sprite(300, 1050, "branca");
   //player2.setCollideWorldBounds(true);
 
   this.anims.create({
@@ -171,17 +173,6 @@ cena1.create = function () {
     frameRate: 10,
     repeat: -1,
   });
-
-  /*
-  W = this.input.keyboard.addKey("W");
-  S = this.input.keyboard.addKey("S");
-  A = this.input.keyboard.addKey("A");
-  D = this.input.keyboard.addKey("D");
-  */
-
-  // Camada 1: terreno
-  labirinto = map.createLayer("labirinto", tileset0, 0, 0);
-  labirinto.setCollisionByProperty({ collides: true });
 
   // Cena (960x960) maior que a tela (800x600)
   this.cameras.main.setBounds(0, 0, 1920, 1088);
