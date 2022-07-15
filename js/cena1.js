@@ -39,14 +39,14 @@ const audio = document.querySelector("audio");
 
 cena1.preload = function () {
   //Tiled
-  this.load.image("tileset0", "assets/terreno.png");
-  this.load.tilemapTiledJSON("map", "assets/teste4.json");
-  
+  this.load.image("tileset0", "assets/terreno2.png");
+  this.load.tilemapTiledJSON("map", "assets/labirintopronto.json");
+
   //Audios
   this.load.audio("musiquinha", "assets/musiquinha.mp3");
   this.load.audio("efeito", "assets/coli-arvore.mp3");
   this.load.audio("moeda", "assets/coletamoeda.mp3");
-  
+
   // Jogador 1
   this.load.spritesheet("bruxa", "assets/bruxa.png", {
     frameWidth: 32,
@@ -184,8 +184,8 @@ cena1.create = function () {
   labirinto.setCollisionByProperty({ collides: true });
 
   // Cena (960x960) maior que a tela (800x600)
-  this.cameras.main.setBounds(0, 0, 1280, 800);
-  this.physics.world.setBounds(0, 0, 1280, 800);
+  this.cameras.main.setBounds(0, 0, 1920, 1088);
+  this.physics.world.setBounds(0, 0, 1920, 1088);
   this.cameras.main.setZoom(1);
 
   // Câmera seguindo o personagem 1
@@ -412,9 +412,9 @@ cena1.update = function () {
     });
   }
 };*/
- if (gameOver) {
-   this.scene.start(cena2);
- }
+  if (gameOver) {
+    this.scene.start(cena2);
+  }
   if (jogador === 1 && vida >= 0) {
     if (cursors.left.isDown) {
       player1.setVelocityX(-100);
@@ -449,7 +449,7 @@ cena1.update = function () {
       x: player1.body.x + 16,
       y: player1.body.y + 24,
     });
-    
+
   } else if (jogador === 2 && vida >= 0) {
     if (cursors.left.isDown) {
       player2.setVelocityX(-100);
