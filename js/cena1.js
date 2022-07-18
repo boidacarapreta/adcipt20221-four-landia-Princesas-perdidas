@@ -40,37 +40,52 @@ const audio = document.querySelector("audio");
 cena1.preload = function () {
   //Tiled
   this.load.image("tileset0", "assets/terreno2.png");
-  this.load.tilemapTiledJSON("map", "assets/labirintopronto2.json");
+  this.load.tilemapTiledJSON("map", "assets/labirintopronto3.json");
 
   //Audios
   this.load.audio("musiquinha", "assets/musiquinha.mp3");
   this.load.audio("efeito", "assets/coli-arvore.mp3");
-  this.load.audio("moeda", "assets/coletamoeda.mp3");
 
-  // Jogador 1
+  //Bruxa
   this.load.spritesheet("bruxa", "assets/bruxa.png", {
     frameWidth: 32,
     frameHeight: 48,
   });
-  // Jogador 2
+
+  //Princesas
   this.load.spritesheet("branca", "assets/brancadeneve.png", {
     frameWidth: 32,
     frameHeight: 48,
   });
 
-  //Sprite tela cheia
+  this.load.spritesheet("cinderela", "assets/cinderela.png", {
+    frameWidth: 32,
+    frameHeight: 48,
+  });
+
+  this.load.spritesheet("elsa", "assets/elsa.png", {
+    frameWidth: 32,
+    frameHeight: 48,
+  });
+
+  //Tela cheia
   this.load.spritesheet("telacheia", "assets/telacheia2.png", {
     frameWidth: 75,
     frameHeight: 37,
   });
 
-  //Sprite tela cheia
+  //Vida
   this.load.spritesheet("vida", "assets/vida.png", {
     frameWidth: 150,
     frameHeight: 75,
   });
 
   //Baú
+  this.load.image("bauaberto", "assets/bauaberto.png");
+  this.load.image("baufechado", "assets/baufechado.png");
+
+  //Escolha personagem
+  this.load.image("escolha", "assets/escolhaprincesa.png");
 
 };
 
@@ -87,6 +102,7 @@ cena1.create = function () {
   tileset0 = map.addTilesetImage("tileset0", "tileset0");
 
   chao = map.createLayer("chao", tileset0, 0, 0);
+  chao.setCollisionByProperty({ collides: true });
 
   // Camada 1: terreno
   labirinto = map.createLayer("labirinto", tileset0, 0, 0);
@@ -179,9 +195,6 @@ cena1.create = function () {
   this.physics.world.setBounds(0, 0, 1920, 1088);
   this.cameras.main.setZoom(1);
 
-  // Câmera seguindo o personagem 1
-  //this.cameras.main.startFollow(player1);
-  //
 
   //Tela cheia
   var button2 = this.add //mudar onde o sprite fica para conseguir colocar no zoom 2
@@ -205,7 +218,7 @@ cena1.create = function () {
     this
   );
 
-  vida = 5;
+  vida = 3;
   placarVida = this.add.sprite(900 - 16, 50, "vida", 0).setScrollFactor(0);
 
   cursors = this.input.keyboard.createCursorKeys();
