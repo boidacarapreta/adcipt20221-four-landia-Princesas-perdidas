@@ -35,6 +35,8 @@ var ice_servers = {
 var localConnection;
 var remoteConnection;
 var midias;
+var explicaprin;
+var explicabru;
 const audio = document.querySelector("audio");
 
 cena1.preload = function () {
@@ -75,9 +77,9 @@ cena1.preload = function () {
   });
 
   //Vida
-  this.load.spritesheet("vida", "assets/vida.png", {
-    frameWidth: 150,
-    frameHeight: 75,
+  this.load.spritesheet("vida", "assets/vida2.png", {
+    frameWidth: 87,
+    frameHeight: 29,
   });
 
   //Baú
@@ -87,6 +89,10 @@ cena1.preload = function () {
   //Escolha personagem
   this.load.image("escolha", "assets/escolhaprincesa.png");
 
+  //Explicações do que fazer
+  this.load.image("explicaprin", "assets/eprincesa.png");
+  this.load.image("explicabru", "assets/ebruxa.png");
+
 };
 
 cena1.create = function () {
@@ -95,6 +101,8 @@ cena1.create = function () {
   //trilha.play();
   //trilha.setLoop(true);
   parede = this.sound.add("efeito");
+
+  explicaprin = this.add.image(480, 270, "explicaprin", 0); //AQUII
 
   map = this.make.tilemap({ key: "map" });
 
@@ -145,7 +153,7 @@ cena1.create = function () {
   });
 
   // Jogador 2 - controles/animação
-  player2 = this.physics.add.sprite(300, 1050, "branca");
+  player2 = this.physics.add.sprite(185, 1030, "branca");
   //player2.setCollideWorldBounds(true);
 
   this.anims.create({
@@ -252,11 +260,13 @@ cena1.create = function () {
 
       // Detecção de colisão: terreno
       physics.add.collider(player1, labirinto, hitTiles, null, this);
+      physics.add.collider(player1, chao, null, null, this);
 
       // Câmera seguindo o personagem 1
       cameras.main.startFollow(player1);
 
       placarVida.setVisible(false);
+      explicaprin.setVisible(false);
 
       navigator.mediaDevices
         .getUserMedia({ video: false, audio: true })
@@ -273,6 +283,7 @@ cena1.create = function () {
 
       // Detecção de colisão: terreno
       physics.add.collider(player2, labirinto, hitTiles, null, this);
+      physics.add.collider(player2, chao, null, null, this);
 
       // Câmera seguindo o personagem 2
       cameras.main.startFollow(player2);
@@ -367,55 +378,6 @@ cena1.create = function () {
 };
 
 cena1.update = function () {
-  // Controle do personagem por direcionais
-  /*if (jogador === 1 && vida >= 0) {
-    if (cursors.left.isDown) {
-      player1.body.setVelocityX(-100);
-      player1.anims.play("left", true);
-    } else if (cursors.right.isDown) {
-      player1.body.setVelocityX(100);
-      player1.anims.play("right", true);
-    } else {
-      player1.body.setVelocity(0);
-      player1.anims.play("turn", true);
-    }
-    if (cursors.up.isDown) {
-      player1.body.setVelocityY(-100);
-    } else if (cursors.down.isDown) {
-      player1.body.setVelocityY(100);
-    } else {
-      player1.body.setVelocityY(0);
-    }
-    socket.emit("estadoDoJogador", {
-      frame: player1.anims.getFrameName(),
-      x: player1.body.x + 16,
-      y: player1.body.y + 24,
-    });
-  } else if (jogador === 2 && vida >= 0) {
-    if (cursors.left.isDown) {
-      player2.body.setVelocityX(-100);
-      player2.anims.play("A", true);
-    } else if (cursors.right.isDown) {
-      player2.body.setVelocityX(100);
-      player2.anims.play("D", true);
-    } else {
-      player2.body.setVelocity(0);
-      player2.anims.play("turn2", true);
-    }
-    if (cursors.up.isDown) {
-      player2.body.setVelocityY(-100);
-    } else if (cursors.down.isDown) {
-      player2.body.setVelocityY(100);
-    } else {
-      player2.body.setVelocityY(0);
-    }
-    socket.emit("estadoDoJogador", {
-      frame: player2.anims.getFrameName(),
-      x: player2.body.x + 16,
-      y: player2.body.y + 24,
-    });
-  }
-};*/
   if (gameOver) {
     this.scene.start(cena2);
   }
@@ -517,8 +479,8 @@ function hitTiles(player1, player2, labirinto) {
 function hitPlayer(player1, player2) {
   // Personagens se chocam
   vida--;
-  placarVida.setFrame(5 - vida);
-  console.log(vida, 5 - vida);
+  placarVida.setFrame(3 - vida);
+  console.log(vida, 3 - vida);
   player2.x = 150;
   player2.y = 90;
 

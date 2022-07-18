@@ -2,7 +2,7 @@
 import { cena1 } from "./cena1.js";
 
 // Criar a cena 2
-var cena2 = new Phaser.Scene("Cena 2");
+var cena2 = new Phaser.Scene("cena 2");
 
 cena2.preload = function () {
   // Imagem de fundo
