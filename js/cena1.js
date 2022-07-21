@@ -37,6 +37,14 @@ var remoteConnection;
 var midias;
 var explicaprin;
 var explicabru;
+var sala;
+var botao1;
+var botao2;
+var botao3;
+var botao4;
+var botao5;
+var inventory;
+var online;
 const audio = document.querySelector("audio");
 
 cena1.preload = function () {
@@ -93,9 +101,42 @@ cena1.preload = function () {
   this.load.image("explicaprin", "assets/eprincesa.png");
   this.load.image("explicabru", "assets/ebruxa.png");
 
+  //salas
+  this.load.image("sala1", "./assets/botaosala1.png");
+  this.load.image("sala2", "./assets/botaosala2.png");
+  this.load.image("sala3", "./assets/botaosala3.png");
+  this.load.image("sala4", "./assets/botaosala4.png");
+  this.load.image("sala5", "./assets/botaosala5.png");
+
+  //anões
+  this.load.image("anoes", "./assets/anoes.png");
+
+  //D-pad
+  this.load.spritesheet("esquerda", "assets/esquerda.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  this.load.spritesheet("direita", "assets/direita.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  this.load.spritesheet("cima", "assets/cima.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  this.load.spritesheet("baixo", "assets/baixo.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+
+  //Imagem para entrar na sala
+  this.load.image("waiting", "assets/escolhasala.jpg");
+
 };
 
 cena1.create = function () {
+
+  online = false;
   //Trilha sonora
   //trilha = this.sound.add("musiquinha");
   //trilha.play();
@@ -201,7 +242,7 @@ cena1.create = function () {
   // Cena (960x960) maior que a tela (800x600)
   this.cameras.main.setBounds(0, 0, 1920, 1088);
   this.physics.world.setBounds(0, 0, 1920, 1088);
-  this.cameras.main.setZoom(1);
+  //this.cameras.main.setZoom(1);
 
 
   //Tela cheia
@@ -236,19 +277,84 @@ cena1.create = function () {
   physics.add.collider(player1, tileset0);
   physics.add.collider(player2, tileset0);
   physics.add.collider(player1, player2, hitPlayer, null, this);
-
-  //worldLayer.setCollisionBetween();
-  //worldLayer.setCollisionByProperty({ collides: true });
-
-  // Detecção de colisão e disparo de evento: ARCas
-  //physics.add.collider(player1, labirinto, hitTiles, null, this);
-  //physics.add.collider(player2, labirinto, hitTiles, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
+
+  // D-pad
+  var esquerda = this.add
+    .image(450, 500, "esquerda", 0)
+    .setInteractive()
+    .setScrollFactor(0);
+    //.setScale(0.5);
+
+  var direita = this.add
+    .image(500, 500, "direita", 0)
+    .setInteractive()
+    .setScrollFactor(0);
+    //.setScale(0.5)
+  var cima = this.add
+    .image(300, 470, "cima", 0)
+    .setInteractive()
+    .setScrollFactor(0);
+    //.setScale(0.5);
+  var baixo = this.add
+    .image(300, 510, "baixo", 0)
+    .setInteractive()
+    .setScrollFactor(0);
+    //.setScale(0.5);
 
   socket = io("https://still-tundra-75872.herokuapp.com/");
   var physics = this.physics;
   var cameras = this.cameras;
   var time = this.time;
+  var waiting = this.add.image(400, 300, "waiting", 0);
+
+  botao1 = this.add.image(100, 600, "sala1").setInteractive();
+  botao2 = this.add.image(250, 600, "sala2").setInteractive();
+  botao3 = this.add.image(400, 600, "sala3").setInteractive();
+  botao4 = this.add.image(550, 600, "sala4").setInteractive();
+  botao5 = this.add.image(700, 600, "sala5").setInteractive();
+  function desaparecerbotaosala() {
+    botao1.setVisible(false);
+    botao2.setVisible(false);
+    botao3.setVisible(false)
+    botao4.setVisible(false);
+    botao5.setVisible(false);
+  }
+  botao1.on("pointerdown", function () {
+    sala = 1;
+    socket.emit("entrar-na-sala", sala);
+    cameras.main.setZoom(1);
+    waiting.setVisible(false);
+    desaparecerbotaosala();
+  });
+  botao2.on("pointerdown", function () {
+    sala = 2;
+    socket.emit("entrar-na-sala", sala);
+    cameras.main.setZoom(1);
+    waiting.setVisible(false);
+    desaparecerbotaosala();
+  });
+  botao3.on("pointerdown", function () {
+    sala = 3;
+    socket.emit("entrar-na-sala", sala);
+    cameras.main.setZoom(1);
+    waiting.setVisible(false);
+    desaparecerbotaosala();
+  });
+  botao4.on("pointerdown", function () {
+    sala = 4;
+    socket.emit("entrar-na-sala", sala);
+    cameras.main.setZoom(1);
+    waiting.setVisible(false);
+    desaparecerbotaosala();
+  });
+  botao5.on("pointerdown", function () {
+    sala = 5;
+    socket.emit("entrar-na-sala", sala);
+    cameras.main.setZoom(1);
+    waiting.setVisible(false);
+    desaparecerbotaosala();
+  });
 
   socket.on("jogadores", (jogadores) => {
     if (jogadores.primeiro === socket.id) {
@@ -265,8 +371,68 @@ cena1.create = function () {
       // Câmera seguindo o personagem 1
       cameras.main.startFollow(player1);
 
-      placarVida.setVisible(false);
-      explicaprin.setVisible(false);
+      //placarVida.setVisible(false);
+      //explicaprin.setVisible(false);
+
+      // D-pad: para cada direção já os eventos
+      // para tocar a tela ("pointerover")
+      // e ao terminar essa interação ("pointerout")
+      esquerda.on("pointerover", () => {
+        if (online) {
+          esquerda.setFrame(1);
+          player1.setVelocityX(-160);
+          player1.anims.play("left", true);
+        }
+      });
+      esquerda.on("pointerout", () => {
+        if (online) {
+          esquerda.setFrame(0);
+          player1.setVelocityX(0);
+          player1.anims.play("turn", true);
+        }
+      });
+      direita.on("pointerover", () => {
+        if (online) {
+          direita.setFrame(1);
+          player1.setVelocityX(160);
+          player1.anims.play("right", true);
+        }
+      });
+      direita.on("pointerout", () => {
+        if (online) {
+          direita.setFrame(0);
+          player1.setVelocityX(0);
+          player1.anims.play("turn", true);
+        }
+      });
+      cima.on("pointerover", () => {
+        if (online) {
+          cima.setFrame(1);
+          player1.setVelocityY(-160);
+          player1.anims.play("up", true);
+        }
+      });
+      cima.on("pointerout", () => {
+        if (online) {
+          cima.setFrame(0);
+          player1.setVelocityY(0);
+          player1.anims.play("turn", true);
+        }
+      });
+      baixo.on("pointerover", () => {
+        if (online) {
+          baixo.setFrame(1);
+          player1.setVelocityY(160);
+          player1.anims.play("down", true);
+        }
+      });
+      baixo.on("pointerout", () => {
+        if (online) {
+          baixo.setFrame(0);
+          player1.setVelocityY(0);
+          player1.anims.play("down", true);
+        }
+      });
 
       navigator.mediaDevices
         .getUserMedia({ video: false, audio: true })
@@ -287,6 +453,66 @@ cena1.create = function () {
 
       // Câmera seguindo o personagem 2
       cameras.main.startFollow(player2);
+
+      // D-pad: para cada direção já os eventos
+      // para tocar a tela ("pointerover")
+      // e ao terminar essa interação ("pointerout")
+      esquerda.on("pointerover", () => {
+        if (online) {
+          esquerda.setFrame(1);
+          player2.setVelocityX(-160);
+          player2.anims.play("left2", true);
+        }
+      });
+      esquerda.on("pointerout", () => {
+        if (online) {
+          esquerda.setFrame(0);
+          player2.setVelocityX(0);
+          player2.anims.play("turn2", true);
+        }
+      });
+      direita.on("pointerover", () => {
+        if (online) {
+          direita.setFrame(1);
+          player2.setVelocityX(160);
+          player2.anims.play("right2", true);
+        }
+      });
+      direita.on("pointerout", () => {
+        if (online) {
+          direita.setFrame(0);
+          player2.setVelocityX(0);
+          player2.anims.play("turn2", true);
+        }
+      });
+      cima.on("pointerover", () => {
+        if (online) {
+          cima.setFrame(1);
+          player2.setVelocityY(-160);
+          player2.anims.play("up2", true);
+        }
+      });
+      cima.on("pointerout", () => {
+        if (online) {
+          cima.setFrame(0);
+          player2.setVelocityY(0);
+          player2.anims.play("turn2", true);
+        }
+      });
+      baixo.on("pointerover", () => {
+        if (online) {
+          baixo.setFrame(1);
+          player2.setVelocityY(160);
+          player2.anims.play("down2", true);
+        }
+      });
+      baixo.on("pointerout", () => {
+        if (online) {
+          baixo.setFrame(0);
+          player2.setVelocityY(0);
+          player2.anims.play("turn2", true);
+        }
+      });
 
       navigator.mediaDevices
         .getUserMedia({ video: false, audio: true })
@@ -373,6 +599,16 @@ cena1.create = function () {
       player1.setFrame(frame);
       player1.x = x;
       player1.y = y;
+    }
+  });
+
+  socket.on("fim-de-jogo", ({ vencedor }) => {
+    if (vencedor === "mocinha") {
+      this.scene.start(cena3);
+      socket.close();
+    } else if (vencedor === "assassino") {
+      this.scene.start(cena2);
+      socket.close();
     }
   });
 };
@@ -487,6 +723,16 @@ function hitPlayer(player1, player2) {
   if (vida === 0) {
     gameOver = true;
   }
+}
+
+function collectChave(player2, anoes) {
+  //faca some quando coletada
+  anoes.disableBody(true, true);
+
+  inventory += 1;
+  personagem_com_faca = true;
+  console.log("Personagem com faca? %s", personagem_com_faca);
+  socket.emit("inventario", sala, { faca: true });
 }
 
 export { cena1 };

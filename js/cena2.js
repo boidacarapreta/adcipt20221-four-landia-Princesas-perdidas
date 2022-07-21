@@ -8,7 +8,7 @@ cena2.preload = function () {
   // Imagem de fundo
   this.load.image("fim", "assets/cenafinal.jpg");
 
-  this.load.image("botao", "assets/botao3.png");
+  this.load.image("botao", "assets/play.png");
 };
 
 cena2.create = function () {
