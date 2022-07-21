@@ -3,20 +3,10 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
-    origins: [
-      "https://princesasperdidas.ifsc.cloud",
-      "https://*.gitpod.io"
-    ],
+    origins: ["https://princesasperdidas.ifsc.cloud", "https://*.gitpod.io"],
   },
 });
 const PORT = process.env.PORT || 3000;
-/*var jogadores = {
-  primeiro: undefined,
-  segundo: undefined,
-};*/
-
-//Perguntar pro professor se é aq q eu vou conseguir colocar a ordem do q aparece.
-//Por exemplo, para aparecer a cena de explicação do jogo.
 
 // Disparar evento quando jogador entrar na partida
 io.on("connection", (socket) => {
@@ -42,37 +32,28 @@ io.on("connection", (socket) => {
     // Envia a todos a lista atual de jogadores (mesmo incompleta)
     io.to(sala).emit("jogadores", jogadores);
   });
-  
+
   // Sinalização de áudio: oferta
-  socket.on("offer", (socketId, description) => {
-    socket.to(socketId).emit("offer", socket.id, description);
+  socket.on("offer", (sala, description) => {
+    socket.broadcast.to(sala).emit("offer", socket.id, description);
   });
 
   // Sinalização de áudio: atendimento da oferta
-  socket.on("answer", (socketId, description) => {
-    socket.to(socketId).emit("answer", description);
+  socket.on("answer", (sala, description) => {
+    socket.broadcast.to(sala).emit("answer", description);
   });
 
   // Sinalização de áudio: envio dos candidatos de caminho
-  socket.on("candidate", (socketId, signal) => {
-    socket.to(socketId).emit("candidate", signal);
+  socket.on("candidate", (sala, signal) => {
+    socket.broadcast.to(sala).emit("candidate", signal);
   });
 
-
-  socket.on("estadoDoJogador", (estado) => {
-    socket.broadcast.emit("desenharOutroJogador", estado);
-  });
-  
   // Disparar evento quando jogador sair da partida
-  socket.on("disconnect", () => {
-    if (jogadores.primeiro === socket.id) {
-      jogadores.primeiro = undefined;
-    }
-    if (jogadores.segundo === socket.id) {
-      jogadores.segundo = undefined;
-    }
-    io.emit("jogadores", jogadores);
-    console.log("-Lista de jogadores: %s", jogadores);
+  socket.on("disconnect", () => { });
+
+  // Envio do estado do outro jogador
+  socket.on("estadoDoJogador", (sala, estado) => {
+    socket.broadcast.to(sala).emit("desenharOutroJogador", estado);
   });
 });
 
