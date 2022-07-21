@@ -110,19 +110,7 @@ cena1.preload = function () {
   this.load.image("anoes", "./assets/anoes.png");
 
   //D-pad
-  this.load.spritesheet("esquerda", "assets/esquerda.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  this.load.spritesheet("direita", "assets/direita.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  this.load.spritesheet("cima", "assets/cima.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  this.load.spritesheet("baixo", "assets/baixo.png", {
+  this.load.spritesheet("setas", "assets/setas.png", {
     frameWidth: 64,
     frameHeight: 64,
   });
@@ -279,26 +267,23 @@ cena1.create = function () {
 
   // D-pad
   var esquerda = this.add
-    .image(450, 500, "esquerda", 0)
+    .image(450, 500, "setas", 0)
     .setInteractive()
     .setScrollFactor(0);
   //.setScale(0.5);
 
   var direita = this.add
-    .image(500, 500, "direita", 0)
+    .image(500, 500, "setas", 2)
     .setInteractive()
     .setScrollFactor(0);
-  //.setScale(0.5)
   var cima = this.add
-    .image(300, 470, "cima", 0)
+    .image(300, 470, "setas", 6)
     .setInteractive()
     .setScrollFactor(0);
-  //.setScale(0.5);
   var baixo = this.add
-    .image(300, 510, "baixo", 0)
+    .image(300, 510, "setas", 4)
     .setInteractive()
     .setScrollFactor(0);
-  //.setScale(0.5);
 
   //socket = io("https://still-tundra-75872.herokuapp.com/");
   socket = io()
@@ -395,42 +380,42 @@ cena1.create = function () {
       });
       direita.on("pointerover", () => {
         if (online) {
-          direita.setFrame(1);
+          direita.setFrame(3);
           player1.setVelocityX(160);
           player1.anims.play("right", true);
         }
       });
       direita.on("pointerout", () => {
         if (online) {
-          direita.setFrame(0);
+          direita.setFrame(2);
           player1.setVelocityX(0);
           player1.anims.play("turn", true);
         }
       });
       cima.on("pointerover", () => {
         if (online) {
-          cima.setFrame(1);
+          cima.setFrame(7);
           player1.setVelocityY(-160);
           player1.anims.play("up", true);
         }
       });
       cima.on("pointerout", () => {
         if (online) {
-          cima.setFrame(0);
+          cima.setFrame(6);
           player1.setVelocityY(0);
           player1.anims.play("turn", true);
         }
       });
       baixo.on("pointerover", () => {
         if (online) {
-          baixo.setFrame(1);
+          baixo.setFrame(5);
           player1.setVelocityY(160);
           player1.anims.play("down", true);
         }
       });
       baixo.on("pointerout", () => {
         if (online) {
-          baixo.setFrame(0);
+          baixo.setFrame(4);
           player1.setVelocityY(0);
           player1.anims.play("down", true);
         }
@@ -475,42 +460,42 @@ cena1.create = function () {
       });
       direita.on("pointerover", () => {
         if (online) {
-          direita.setFrame(1);
+          direita.setFrame(3);
           player2.setVelocityX(160);
           player2.anims.play("right2", true);
         }
       });
       direita.on("pointerout", () => {
         if (online) {
-          direita.setFrame(0);
+          direita.setFrame(2);
           player2.setVelocityX(0);
           player2.anims.play("turn2", true);
         }
       });
       cima.on("pointerover", () => {
         if (online) {
-          cima.setFrame(1);
+          cima.setFrame(7);
           player2.setVelocityY(-160);
           player2.anims.play("up2", true);
         }
       });
       cima.on("pointerout", () => {
         if (online) {
-          cima.setFrame(0);
+          cima.setFrame(6);
           player2.setVelocityY(0);
           player2.anims.play("turn2", true);
         }
       });
       baixo.on("pointerover", () => {
         if (online) {
-          baixo.setFrame(1);
+          baixo.setFrame(5);
           player2.setVelocityY(160);
           player2.anims.play("down2", true);
         }
       });
       baixo.on("pointerout", () => {
         if (online) {
-          baixo.setFrame(0);
+          baixo.setFrame(4);
           player2.setVelocityY(0);
           player2.anims.play("turn2", true);
         }
