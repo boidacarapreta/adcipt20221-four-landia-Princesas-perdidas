@@ -130,7 +130,7 @@ cena1.preload = function () {
   });
 
   //Imagem para entrar na sala
-  this.load.image("waiting", "assets/escolhasala.jpg");
+  this.load.image("waiting", "assets/escolhasala.png");
 
 };
 
@@ -284,35 +284,38 @@ cena1.create = function () {
     .image(450, 500, "esquerda", 0)
     .setInteractive()
     .setScrollFactor(0);
-    //.setScale(0.5);
+  //.setScale(0.5);
 
   var direita = this.add
     .image(500, 500, "direita", 0)
     .setInteractive()
     .setScrollFactor(0);
-    //.setScale(0.5)
+  //.setScale(0.5)
   var cima = this.add
     .image(300, 470, "cima", 0)
     .setInteractive()
     .setScrollFactor(0);
-    //.setScale(0.5);
+  //.setScale(0.5);
   var baixo = this.add
     .image(300, 510, "baixo", 0)
     .setInteractive()
     .setScrollFactor(0);
-    //.setScale(0.5);
+  //.setScale(0.5);
 
-  socket = io("https://still-tundra-75872.herokuapp.com/");
+  //socket = io("https://still-tundra-75872.herokuapp.com/");
+  socket = io()
+
   var physics = this.physics;
   var cameras = this.cameras;
   var time = this.time;
-  var waiting = this.add.image(400, 300, "waiting", 0);
+  var waiting = this.add.image(480, 270, "waiting", 0);
 
-  botao1 = this.add.image(100, 600, "sala1").setInteractive();
-  botao2 = this.add.image(250, 600, "sala2").setInteractive();
-  botao3 = this.add.image(400, 600, "sala3").setInteractive();
-  botao4 = this.add.image(550, 600, "sala4").setInteractive();
-  botao5 = this.add.image(700, 600, "sala5").setInteractive();
+  botao1 = this.add.image(150, 400, "sala1").setInteractive();
+  botao2 = this.add.image(300, 400, "sala2").setInteractive();
+  botao3 = this.add.image(450, 400, "sala3").setInteractive();
+  botao4 = this.add.image(600, 400, "sala4").setInteractive();
+  botao5 = this.add.image(750, 400, "sala5").setInteractive();
+
   function desaparecerbotaosala() {
     botao1.setVisible(false);
     botao2.setVisible(false);
@@ -320,6 +323,7 @@ cena1.create = function () {
     botao4.setVisible(false);
     botao5.setVisible(false);
   }
+
   botao1.on("pointerdown", function () {
     sala = 1;
     socket.emit("entrar-na-sala", sala);
@@ -546,18 +550,10 @@ cena1.create = function () {
 
     // Os dois jogadores estão conectados
     console.log(jogadores);
-    /*
+
     if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
-      // Contagem regressiva em segundos (1.000 milissegundos)
-      timer = 60;
-      timedEvent = time.addEvent({
-        delay: 1000,
-        callback: countdown,
-        callbackScope: this,
-        loop: true,
-      });
+      online = true
     }
-    */
   });
 
   socket.on("offer", (socketId, description) => {
@@ -618,33 +614,33 @@ cena1.update = function () {
     this.scene.start(cena2);
   }
   if (jogador === 1 && vida >= 0) {
-    if (cursors.left.isDown) {
-      player1.setVelocityX(-100);
-    } else if (cursors.right.isDown) {
-      player1.setVelocityX(100);
-    } else {
-      player1.setVelocityX(0);
-    }
-
-    if (cursors.up.isDown) {
-      player1.setVelocityY(-100);
-    } else if (cursors.down.isDown) {
-      player1.setVelocityY(100);
-    } else {
-      player1.setVelocityY(0);
-    }
-
-    if (cursors.left.isDown) {
-      player1.anims.play("left", true);
-    } else if (cursors.right.isDown) {
-      player1.anims.play("right", true);
-    } else if (cursors.up.isDown) {
-      player1.anims.play("up", true);
-    } else if (cursors.down.isDown) {
-      player1.anims.play("down", true);
-    } else {
-      player1.anims.play("turn");
-    }
+    /*    if (cursors.left.isDown) {
+          player1.setVelocityX(-100);
+        } else if (cursors.right.isDown) {
+          player1.setVelocityX(100);
+        } else {
+          player1.setVelocityX(0);
+        }
+    
+        if (cursors.up.isDown) {
+          player1.setVelocityY(-100);
+        } else if (cursors.down.isDown) {
+          player1.setVelocityY(100);
+        } else {
+          player1.setVelocityY(0);
+        }
+    
+        if (cursors.left.isDown) {
+          player1.anims.play("left", true);
+        } else if (cursors.right.isDown) {
+          player1.anims.play("right", true);
+        } else if (cursors.up.isDown) {
+          player1.anims.play("up", true);
+        } else if (cursors.down.isDown) {
+          player1.anims.play("down", true);
+        } else {
+          player1.anims.play("turn");
+        }*/
 
     socket.emit("estadoDoJogador", {
       frame: player1.anims.getFrameName(),
@@ -653,7 +649,7 @@ cena1.update = function () {
     });
 
   } else if (jogador === 2 && vida >= 0) {
-    if (cursors.left.isDown) {
+    /*if (cursors.left.isDown) {
       player2.setVelocityX(-100);
     } else if (cursors.right.isDown) {
       player2.setVelocityX(100);
@@ -697,7 +693,7 @@ cena1.update = function () {
       player2.setVelocityX(0);
       player2.setVelocityY(0);
       player2.anims.play("turn2");
-    }
+    }*/
 
     socket.emit("estadoDoJogador", {
       frame: player2.anims.getFrameName(),
