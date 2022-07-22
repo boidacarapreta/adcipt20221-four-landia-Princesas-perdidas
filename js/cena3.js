@@ -1,17 +1,17 @@
 // Importar a próxima cena
 import { cena1 } from "./cena1.js";
 
-// Criar a cena 2
+// Criar a cena 3
 var cena3 = new Phaser.Scene("cena 3");
 
-cena2.preload = function () {
+cena3.preload = function () {
     // Imagem de fundo
-    this.load.image("fim", "assets/cenafinal.jpg");
+    this.load.image("perda", "assets/perda.png");
 
     this.load.image("botao", "assets/play.png");
 };
 
-cena2.create = function () {
+cena3.create = function () {
     // Botão com a imagem de fundo
     this.add.image(480, 270, "fim");
 
@@ -27,7 +27,7 @@ cena2.create = function () {
     );
 };
 
-cena2.update = function () { };
+cena3.update = function () { };
 
 // Exportar a cena
-export { cena2 };
+export { cena3 };

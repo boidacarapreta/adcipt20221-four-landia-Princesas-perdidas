@@ -1,5 +1,6 @@
 // Importar a próxima cena
 import { cena2 } from "./cena2.js";
+import { cena3 } from "./cena3.js";
 
 // Criar a cena 3
 var cena1 = new Phaser.Scene("Cena 1");
@@ -43,6 +44,7 @@ var botao4;
 var botao5;
 var inventory;
 var online;
+var next;
 const audio = document.querySelector("audio");
 
 cena1.preload = function () {
@@ -66,16 +68,6 @@ cena1.preload = function () {
     frameHeight: 48,
   });
 
-  this.load.spritesheet("cinderela", "assets/cinderela.png", {
-    frameWidth: 32,
-    frameHeight: 48,
-  });
-
-  this.load.spritesheet("elsa", "assets/elsa.png", {
-    frameWidth: 32,
-    frameHeight: 48,
-  });
-
   //Tela cheia
   this.load.spritesheet("telacheia", "assets/telacheia2.png", {
     frameWidth: 75,
@@ -87,10 +79,6 @@ cena1.preload = function () {
     frameWidth: 87,
     frameHeight: 29,
   });
-
-  //Baú
-  this.load.image("bauaberto", "assets/bauaberto.png");
-  this.load.image("baufechado", "assets/baufechado.png");
 
   //Escolha personagem
   this.load.image("escolha", "assets/escolhaprincesa.png");
@@ -118,6 +106,13 @@ cena1.preload = function () {
   //Imagem para entrar na sala
   this.load.image("waiting", "assets/escolhasala.png");
 
+  //Imagem de explicações
+  this.load.image("eprincesa", "assets/eprincesa.png");
+  this.load.image("ebruxa", "assets/ebruxa.png");
+
+  //Botão next
+  this.load.image("next", "assets/next.png");
+
 };
 
 cena1.create = function () {
@@ -128,8 +123,6 @@ cena1.create = function () {
   //trilha.play();
   //trilha.setLoop(true);
   parede = this.sound.add("efeito");
-
-  explicaprin = this.add.image(480, 270, "explicaprin", 0); //AQUII
 
   map = this.make.tilemap({ key: "map" });
 
@@ -145,7 +138,7 @@ cena1.create = function () {
 
 
   // Jogador 1 - controles/animação
-  player1 = this.physics.add.sprite(2000, 1020, "bruxa");
+  player1 = this.physics.add.sprite(1800, 970, "bruxa");
   //player1.setCollideWorldBounds(true);
 
   //  Animação do player1
@@ -233,7 +226,8 @@ cena1.create = function () {
 
   //Tela cheia
   var button2 = this.add //mudar onde o sprite fica para conseguir colocar no zoom 2
-    .image(100 - 16, 450, "telacheia", 0)
+    .image(300, 130, "telacheia", 0)
+    //.setScale(0.5)
     .setOrigin(1, 0)
     .setInteractive()
     .setScrollFactor(0);
@@ -254,7 +248,7 @@ cena1.create = function () {
   );
 
   vida = 3;
-  placarVida = this.add.sprite(900 - 16, 50, "vida", 0).setScrollFactor(0);
+  placarVida = this.add.sprite(670, 150, "vida", 0).setScrollFactor(0);
 
   cursors = this.input.keyboard.createCursorKeys();
 
@@ -267,37 +261,66 @@ cena1.create = function () {
 
   // D-pad
   var esquerda = this.add
-    .image(450, 500, "setas", 0)
+    .image(610, 360, "setas", 0)
     .setInteractive()
-    .setScrollFactor(0);
-  //.setScale(0.5);
-
+    .setScrollFactor(0)
+    .setScale(0.8);
   var direita = this.add
-    .image(500, 500, "setas", 2)
+    .image(670, 360, "setas", 2)
     .setInteractive()
-    .setScrollFactor(0);
+    .setScrollFactor(0)
+    .setScale(0.8);
   var cima = this.add
-    .image(300, 470, "setas", 6)
+    .image(290, 300, "setas", 6)
     .setInteractive()
-    .setScrollFactor(0);
+    .setScrollFactor(0)
+    .setScale(0.8);
   var baixo = this.add
-    .image(300, 510, "setas", 4)
+    .image(290, 360, "setas", 4)
     .setInteractive()
-    .setScrollFactor(0);
+    .setScrollFactor(0)
+    .setScale(0.8);
 
   //socket = io("https://still-tundra-75872.herokuapp.com/");
   socket = io()
+/*
+  //Parte da imagem de explicação - princesa
+  var eprincesa = this.add.image(480, 270, "eprincesa", 0);
+
+  next = this.add.image(870, 450, "next").setInteractive();
+
+  function desaparecerbotaonext() {
+    next.setVisible(false);
+  }
+
+  next.on("pointerdown", function () {
+    eprincesa.setVisible(false);
+    desaparecerbotaonext();
+  });
+
+  //Parte da imagem de explicação - princesa
+  var ebruxa = this.add.image(480, 270, "ebruxa", 0);
+
+  next = this.add.image(870, 450, "next").setInteractive();
+
+  function desaparecerbotaonext() {
+    next.setVisible(false);
+  }
+
+  next.on("pointerdown", function () {
+    ebruxa.setVisible(false);
+    desaparecerbotaonext();
+  });*/
 
   var physics = this.physics;
   var cameras = this.cameras;
-  var time = this.time;
   var waiting = this.add.image(480, 270, "waiting", 0);
 
-  botao1 = this.add.image(150, 400, "sala1").setInteractive();
-  botao2 = this.add.image(300, 400, "sala2").setInteractive();
-  botao3 = this.add.image(450, 400, "sala3").setInteractive();
-  botao4 = this.add.image(600, 400, "sala4").setInteractive();
-  botao5 = this.add.image(750, 400, "sala5").setInteractive();
+  botao1 = this.add.image(180, 400, "sala1").setInteractive();
+  botao2 = this.add.image(330, 400, "sala2").setInteractive();
+  botao3 = this.add.image(480, 400, "sala3").setInteractive();
+  botao4 = this.add.image(630, 400, "sala4").setInteractive();
+  botao5 = this.add.image(780, 400, "sala5").setInteractive();
 
   function desaparecerbotaosala() {
     botao1.setVisible(false);
@@ -310,35 +333,35 @@ cena1.create = function () {
   botao1.on("pointerdown", function () {
     sala = 1;
     socket.emit("entrar-na-sala", sala);
-    cameras.main.setZoom(1);
+    cameras.main.setZoom(2);
     waiting.setVisible(false);
     desaparecerbotaosala();
   });
   botao2.on("pointerdown", function () {
     sala = 2;
     socket.emit("entrar-na-sala", sala);
-    cameras.main.setZoom(1);
+    cameras.main.setZoom(2);
     waiting.setVisible(false);
     desaparecerbotaosala();
   });
   botao3.on("pointerdown", function () {
     sala = 3;
     socket.emit("entrar-na-sala", sala);
-    cameras.main.setZoom(1);
+    cameras.main.setZoom(2);
     waiting.setVisible(false);
     desaparecerbotaosala();
   });
   botao4.on("pointerdown", function () {
     sala = 4;
     socket.emit("entrar-na-sala", sala);
-    cameras.main.setZoom(1);
+    cameras.main.setZoom(2);
     waiting.setVisible(false);
     desaparecerbotaosala();
   });
   botao5.on("pointerdown", function () {
     sala = 5;
     socket.emit("entrar-na-sala", sala);
-    cameras.main.setZoom(1);
+    cameras.main.setZoom(2);
     waiting.setVisible(false);
     desaparecerbotaosala();
   });
@@ -358,7 +381,7 @@ cena1.create = function () {
       // Câmera seguindo o personagem 1
       cameras.main.startFollow(player1);
 
-      //placarVida.setVisible(false);
+      placarVida.setVisible(false);
       //explicaprin.setVisible(false);
 
       // D-pad: para cada direção já os eventos
@@ -597,34 +620,6 @@ cena1.update = function () {
     this.scene.start(cena2);
   }
   if (jogador === 1 && vida >= 0) {
-    /*    if (cursors.left.isDown) {
-          player1.setVelocityX(-100);
-        } else if (cursors.right.isDown) {
-          player1.setVelocityX(100);
-        } else {
-          player1.setVelocityX(0);
-        }
-    
-        if (cursors.up.isDown) {
-          player1.setVelocityY(-100);
-        } else if (cursors.down.isDown) {
-          player1.setVelocityY(100);
-        } else {
-          player1.setVelocityY(0);
-        }
-    
-        if (cursors.left.isDown) {
-          player1.anims.play("left", true);
-        } else if (cursors.right.isDown) {
-          player1.anims.play("right", true);
-        } else if (cursors.up.isDown) {
-          player1.anims.play("up", true);
-        } else if (cursors.down.isDown) {
-          player1.anims.play("down", true);
-        } else {
-          player1.anims.play("turn");
-        }*/
-
     socket.emit("estadoDoJogador", {
       frame: player1.anims.getFrameName(),
       x: player1.body.x + 16,
@@ -632,52 +627,6 @@ cena1.update = function () {
     });
 
   } else if (jogador === 2 && vida >= 0) {
-    /*if (cursors.left.isDown) {
-      player2.setVelocityX(-100);
-    } else if (cursors.right.isDown) {
-      player2.setVelocityX(100);
-    } else {
-      player2.setVelocityX(0);
-    }
-
-    if (cursors.up.isDown) {
-      player2.setVelocityY(-100);
-    } else if (cursors.down.isDown) {
-      player2.setVelocityY(100);
-    } else {
-      player2.setVelocityY(0);
-    }
-
-    if (cursors.left.isDown) {
-      player2.anims.play("left2", true);
-    } else if (cursors.right.isDown) {
-      player2.anims.play("right2", true);
-    } else if (cursors.up.isDown) {
-      player2.anims.play("up2", true);
-    } else if (cursors.down.isDown) {
-      player2.anims.play("down2", true);
-    } else {
-      player2.anims.play("turn2");
-    }
-
-    if (cursors.left.isDown) {
-      player2.setVelocityX(-100);
-      player2.anims.play("left2", true);
-    } else if (cursors.right.isDown) {
-      player2.setVelocityX(100);
-      player2.anims.play("right2", true);
-    } else if (cursors.up.isDown) {
-      player2.setVelocityY(-100);
-      player2.anims.play("up2", true);
-    } else if (cursors.down.isDown) {
-      player2.setVelocityY(100);
-      player2.anims.play("down2", true);
-    } else {
-      player2.setVelocityX(0);
-      player2.setVelocityY(0);
-      player2.anims.play("turn2");
-    }*/
-
     socket.emit("estadoDoJogador", {
       frame: player2.anims.getFrameName(),
       x: player2.body.x + 16,

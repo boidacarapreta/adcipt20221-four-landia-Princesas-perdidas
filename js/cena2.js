@@ -6,14 +6,14 @@ var cena2 = new Phaser.Scene("cena 2");
 
 cena2.preload = function () {
   // Imagem de fundo
-  this.load.image("fim", "assets/cenafinal.jpg");
+  this.load.image("vitoria", "assets/vitoria.png");
 
   this.load.image("botao", "assets/play.png");
 };
 
 cena2.create = function () {
   // Botão com a imagem de fundo
-  this.add.image(480, 270, "fim");
+  this.add.image(480, 270, "vitoria");
 
   var button = this.add.image(480, 480, "botao").setInteractive();
 
