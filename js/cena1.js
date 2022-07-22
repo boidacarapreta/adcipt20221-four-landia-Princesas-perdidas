@@ -283,8 +283,8 @@ cena1.create = function () {
     .setScrollFactor(0)
     .setScale(0.8);
 
-  //socket = io("https://still-tundra-75872.herokuapp.com/");
-  socket = io()
+  socket = io("https://still-tundra-75872.herokuapp.com/");
+  //socket = io()
 
   var physics = this.physics;
   var cameras = this.cameras;
