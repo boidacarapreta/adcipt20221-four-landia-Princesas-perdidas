@@ -45,6 +45,7 @@ var botao5;
 var inventory;
 var online;
 var next;
+var anoes;
 const audio = document.querySelector("audio");
 
 cena1.preload = function () {
@@ -80,9 +81,6 @@ cena1.preload = function () {
     frameHeight: 29,
   });
 
-  //Escolha personagem
-  this.load.image("escolha", "assets/escolhaprincesa.png");
-
   //Explicações do que fazer
   this.load.image("explicaprin", "assets/eprincesa.png");
   this.load.image("explicabru", "assets/ebruxa.png");
@@ -116,7 +114,6 @@ cena1.preload = function () {
 };
 
 cena1.create = function () {
-
   online = false;
   //Trilha sonora
   //trilha = this.sound.add("musiquinha");
@@ -247,6 +244,8 @@ cena1.create = function () {
     this
   );
 
+  anoes = this.physics.add.sprite(250, 220, "anoes");
+
   vida = 3;
   placarVida = this.add.sprite(670, 150, "vida", 0).setScrollFactor(0);
 
@@ -258,6 +257,7 @@ cena1.create = function () {
   physics.add.collider(player2, tileset0);
   physics.add.collider(player1, player2, hitPlayer, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
+  physics.add.overlap(player2, anoes, null, null, this); //add uma função
 
   // D-pad
   var esquerda = this.add
