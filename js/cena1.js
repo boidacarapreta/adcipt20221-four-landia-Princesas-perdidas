@@ -534,7 +534,7 @@ cena1.create = function () {
             .forEach((track) => localConnection.addTrack(track, midias));
           localConnection.onicecandidate = ({ candidate }) => {
             candidate &&
-              socket.emit("candidate", jogadores.primeiro, candidate);
+              socket.emit("candidate", sala, candidate);
           };
           console.log(midias);
           localConnection.ontrack = ({ streams: [midias] }) => {
@@ -546,7 +546,7 @@ cena1.create = function () {
             .then(() => {
               socket.emit(
                 "offer",
-                jogadores.primeiro,
+                sala,
                 localConnection.localDescription
               );
             });
@@ -578,7 +578,7 @@ cena1.create = function () {
       .then(() => remoteConnection.createAnswer())
       .then((answer) => remoteConnection.setLocalDescription(answer))
       .then(() => {
-        socket.emit("answer", socketId, remoteConnection.localDescription);
+        socket.emit("answer", sala, remoteConnection.localDescription);
       });
   });
 
@@ -620,14 +620,14 @@ cena1.update = function () {
     this.scene.start(cena2);
   }
   if (jogador === 1 && vida >= 0) {
-    socket.emit("estadoDoJogador", {
+    socket.emit("estadoDoJogador", sala, {
       frame: player1.anims.getFrameName(),
       x: player1.body.x + 16,
       y: player1.body.y + 24,
     });
 
   } else if (jogador === 2 && vida >= 0) {
-    socket.emit("estadoDoJogador", {
+    socket.emit("estadoDoJogador", sala, {
       frame: player2.anims.getFrameName(),
       x: player2.body.x + 16,
       y: player2.body.y + 24,
