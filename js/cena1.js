@@ -117,9 +117,9 @@ cena1.preload = function () {
 cena1.create = function () {
   online = false;
   //Trilha sonora
-  //trilha = this.sound.add("musiquinha");
-  //trilha.play();
-  //trilha.setLoop(true);
+  trilha = this.sound.add("musiquinha");
+  trilha.play();
+  trilha.setLoop(true);
   parede = this.sound.add("efeito");
 
   map = this.make.tilemap({ key: "map" });
@@ -283,8 +283,8 @@ cena1.create = function () {
     .setScrollFactor(0)
     .setScale(0.8);
 
-  socket = io("https://still-tundra-75872.herokuapp.com/");
-  //socket = io()
+  //socket = io("https://still-tundra-75872.herokuapp.com/");
+  socket = io()
 
   var physics = this.physics;
   var cameras = this.cameras;
