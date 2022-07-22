@@ -6,6 +6,7 @@ import { cena3 } from "./cena3.js";
 var cena1 = new Phaser.Scene("Cena 1");
 
 var tileset0;
+var trilha;
 var map;
 var chao;
 var player1;
@@ -283,8 +284,8 @@ cena1.create = function () {
     .setScrollFactor(0)
     .setScale(0.8);
 
-  socket = io("https://still-tundra-75872.herokuapp.com/");
-  //socket = io()
+  socket = io("https://calm-sea-30653.herokuapp.com/");
+  //socket = io("https://git.heroku.com/calm-sea-30653.git/")
 
   var physics = this.physics;
   var cameras = this.cameras;
