@@ -245,7 +245,7 @@ cena1.create = function () {
     this
   );
 
-  anoes = this.physics.add.sprite(300, 1030, "anoes");
+  anoes = this.physics.add.sprite(1760, 220, "anoes");
 
   vida = 3;
   vida2 = 1;
@@ -285,39 +285,11 @@ cena1.create = function () {
 
   //socket = io("https://still-tundra-75872.herokuapp.com/");
   socket = io()
-/*
-  //Parte da imagem de explicação - princesa
-  var eprincesa = this.add.image(480, 270, "eprincesa", 0);
-
-  next = this.add.image(870, 450, "next").setInteractive();
-
-  function desaparecerbotaonext() {
-    next.setVisible(false);
-  }
-
-  next.on("pointerdown", function () {
-    eprincesa.setVisible(false);
-    desaparecerbotaonext();
-  });
-
-  //Parte da imagem de explicação - princesa
-  var ebruxa = this.add.image(480, 270, "ebruxa", 0);
-
-  next = this.add.image(870, 450, "next").setInteractive();
-
-  function desaparecerbotaonext() {
-    next.setVisible(false);
-  }
-
-  next.on("pointerdown", function () {
-    ebruxa.setVisible(false);
-    desaparecerbotaonext();
-  });*/
 
   var physics = this.physics;
   var cameras = this.cameras;
-  var waiting = this.add.image(480, 270, "waiting", 0);
 
+  var waiting = this.add.image(480, 270, "waiting", 0);
   botao1 = this.add.image(180, 400, "sala1").setInteractive();
   botao2 = this.add.image(330, 400, "sala2").setInteractive();
   botao3 = this.add.image(480, 400, "sala3").setInteractive();
@@ -608,11 +580,15 @@ cena1.create = function () {
 
   socket.on("fim-de-jogo", ({ vencedor }) => {
     if (vencedor === "branca") {
+      this.scene.pause()
+      vida = 3;
+      vida2 = 1;
       this.scene.start(cena3);
-      socket.close();
     } else if (vencedor === "bruxa") {
+      this.scene.pause()
+      vida = 3;
+      vida2 = 1;
       this.scene.start(cena2);
-      socket.close();
     }
   });
 };
@@ -626,7 +602,7 @@ cena1.update = function () {
         } catch (e) {
           frame = 0;
         }*/
-        
+
         socket.emit("estadoDoJogador", sala, {
           frame: player1.anims.getFrameName(),
           x: player1.body.x + 16,
@@ -635,14 +611,18 @@ cena1.update = function () {
 
         if (vida <= 0) {
           socket.emit("fim-de-jogo", sala, { vencedor: "bruxa" });
+          this.scene.pause()
+          vida = 3;
+          vida2 = 1;
           this.scene.start(cena2);
-          socket.close();
         }
-        
+
         if (vida2 <= 0) {
           socket.emit("fim-de-jogo", sala, { vencedor: "branca" });
+          this.scene.pause()
+          vida = 3;
+          vida2 = 1;
           this.scene.start(cena3);
-          socket.close();
         }
       }
     } else if (jogador === 2 && vida >= 0) {
@@ -651,23 +631,27 @@ cena1.update = function () {
       } catch (e) {
         frame = 0;
       }*/
-      
-        socket.emit("estadoDoJogador", sala, {
+
+      socket.emit("estadoDoJogador", sala, {
         frame: player2.anims.getFrameName(),
         x: player2.body.x + 16,
         y: player2.body.y + 24,
       });
     }
-    if (vida2 <= 0) {
-      socket.emit("fim-de-jogo", sala, { vencedor: "branca" });
-      this.scene.start(cena2);
-      socket.close();
-    }
-
     if (vida <= 0) {
       socket.emit("fim-de-jogo", sala, { vencedor: "bruxa" });
+      this.scene.pause()
+      vida = 3;
+      vida2 = 1;
       this.scene.start(cena3);
-      socket.close();
+    }
+
+    if (vida2 <= 0) {
+      socket.emit("fim-de-jogo", sala, { vencedor: "branca" });
+      this.scene.pause()
+      vida = 3;
+      vida2 = 1;
+      this.scene.start(cena2);
     }
   };
 }
@@ -682,15 +666,14 @@ function hitPlayer(player1, player2) {
   vida--;
   placarVida.setFrame(3 - vida);
   console.log(vida, 3 - vida);
-  player2.x = 185, 
-  player2.y = 1030;
+  player2.x = 185,
+    player2.y = 1030;
 }
 
 function collectChave(player2, anoes, player1) {
   //faca some quando coletada
   anoes.disableBody(true, true);
   vida2--;
-
 }
 
 export { cena1 };

@@ -49,7 +49,9 @@ io.on("connection", (socket) => {
   });
 
   // Disparar evento quando jogador sair da partida
-  socket.on("disconnect", () => { });
+  socket.on("disconnect", () => {
+    console.log(io.sockets.adapter.rooms);
+  });
 
   // Envio do estado do outro jogador
   socket.on("estadoDoJogador", (sala, estado) => {
