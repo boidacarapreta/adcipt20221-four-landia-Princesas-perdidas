@@ -44,6 +44,7 @@ var botao2;
 var botao3;
 var botao4;
 var botao5;
+var pointer;
 var inventory;
 var online;
 var next;
@@ -127,6 +128,8 @@ cena1.create = function () {
 
   // Primeira "tileset0" é o nome que está no tiled - Segundo "tileset0" é a key do preload
   tileset0 = map.addTilesetImage("tileset0", "tileset0");
+
+  pointer = this.input.addPointer(1);
 
   chao = map.createLayer("chao", tileset0, 0, 0);
   chao.setCollisionByProperty({ collides: true });
