@@ -15,6 +15,7 @@ var cameras;
 var parede;
 var labirinto;
 var vida;
+var vida2;
 var placarVida;
 var gameOver;
 var jogador;
@@ -244,9 +245,10 @@ cena1.create = function () {
     this
   );
 
-  anoes = this.physics.add.sprite(250, 220, "anoes");
+  anoes = this.physics.add.sprite(300, 1030, "anoes");
 
   vida = 3;
+  vida2 = 1;
   placarVida = this.add.sprite(670, 150, "vida", 0).setScrollFactor(0);
 
   cursors = this.input.keyboard.createCursorKeys();
@@ -257,7 +259,7 @@ cena1.create = function () {
   physics.add.collider(player2, tileset0);
   physics.add.collider(player1, player2, hitPlayer, null, this);
   physics.add.overlap(player1, player2, hitPlayer, null, this);
-  physics.add.overlap(player2, anoes, null, null, this); //add uma função
+  physics.add.overlap(player2, anoes, collectChave, null, this); //add uma função
 
   // D-pad
   var esquerda = this.add
@@ -605,10 +607,10 @@ cena1.create = function () {
   });
 
   socket.on("fim-de-jogo", ({ vencedor }) => {
-    if (vencedor === "mocinha") {
+    if (vencedor === "branca") {
       this.scene.start(cena3);
       socket.close();
-    } else if (vencedor === "assassino") {
+    } else if (vencedor === "bruxa") {
       this.scene.start(cena2);
       socket.close();
     }
@@ -616,24 +618,59 @@ cena1.create = function () {
 };
 
 cena1.update = function () {
-  if (gameOver) {
-    this.scene.start(cena2);
-  }
-  if (jogador === 1 && vida >= 0) {
-    socket.emit("estadoDoJogador", sala, {
-      frame: player1.anims.getFrameName(),
-      x: player1.body.x + 16,
-      y: player1.body.y + 24,
-    });
+  if (online) {
+    if (jogador === 1) {
+      if (jogador === 1 && vida2 >= 0) {
+        /*try {
+          frame = player1.anims.getFrameName();
+        } catch (e) {
+          frame = 0;
+        }*/
+        
+        socket.emit("estadoDoJogador", sala, {
+          frame: player1.anims.getFrameName(),
+          x: player1.body.x + 16,
+          y: player1.body.y + 24,
+        });
 
-  } else if (jogador === 2 && vida >= 0) {
-    socket.emit("estadoDoJogador", sala, {
-      frame: player2.anims.getFrameName(),
-      x: player2.body.x + 16,
-      y: player2.body.y + 24,
-    });
-  }
-};
+        if (vida <= 0) {
+          socket.emit("fim-de-jogo", sala, { vencedor: "bruxa" });
+          this.scene.start(cena2);
+          socket.close();
+        }
+        
+        if (vida2 <= 0) {
+          socket.emit("fim-de-jogo", sala, { vencedor: "branca" });
+          this.scene.start(cena3);
+          socket.close();
+        }
+      }
+    } else if (jogador === 2 && vida >= 0) {
+      /*try {
+        frame = player2.anims.getFrameName();
+      } catch (e) {
+        frame = 0;
+      }*/
+      
+        socket.emit("estadoDoJogador", sala, {
+        frame: player2.anims.getFrameName(),
+        x: player2.body.x + 16,
+        y: player2.body.y + 24,
+      });
+    }
+    if (vida2 <= 0) {
+      socket.emit("fim-de-jogo", sala, { vencedor: "branca" });
+      this.scene.start(cena2);
+      socket.close();
+    }
+
+    if (vida <= 0) {
+      socket.emit("fim-de-jogo", sala, { vencedor: "bruxa" });
+      this.scene.start(cena3);
+      socket.close();
+    }
+  };
+}
 
 function hitTiles(player1, player2, labirinto) {
   // Ao colidir com a parede, toca o efeito sonoro
@@ -645,22 +682,15 @@ function hitPlayer(player1, player2) {
   vida--;
   placarVida.setFrame(3 - vida);
   console.log(vida, 3 - vida);
-  player2.x = 150;
-  player2.y = 90;
-
-  if (vida === 0) {
-    gameOver = true;
-  }
+  player2.x = 185, 
+  player2.y = 1030;
 }
 
-function collectChave(player2, anoes) {
+function collectChave(player2, anoes, player1) {
   //faca some quando coletada
   anoes.disableBody(true, true);
+  vida2--;
 
-  inventory += 1;
-  personagem_com_faca = true;
-  console.log("Personagem com faca? %s", personagem_com_faca);
-  socket.emit("inventario", sala, { faca: true });
 }
 
 export { cena1 };
